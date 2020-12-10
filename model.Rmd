@@ -31,7 +31,7 @@ names(bef)
 names(arblos)
 ```
 
-Arbeidsledighetsprosenten blir beregnet som: arbl% = antall arb. ledige/arbeidsstyrken. Arbeidsstyrken er her dem man anser egnet for arbeid dvs. uføretrygdete etc. er trukket ut. Arbeidsstyren i en aldesrkategori er derfor langt mindre enn befolkningen i den tilsvarende alderskategorien.
+Arbeidsledighetsprosenten blir beregnet som: arbl% = antall arb. ledige/arbeidsstyrken. Arbeidsstyrken er her dem man anser egnet for arbeid dvs. uføretrygdede etc. er trukket ut. Arbeidsstyrken i en alderskategori er derfor langt mindre enn befolkningen i den tilsvarende alderskategorien.
 
 Dessverre kjenne vi ikke arbeidsstyrken, men vi kan beregne den vha.: 
 arbeidsstyrken = antall arb. ledige/arb. ledighetsprosent.
@@ -80,8 +80,13 @@ names(wf)
 
 Summer de ulike årskategoriene for de to kjønnene og menn+kvinner for å finne total befolkning de ulike årene. Bruk mutate til å lage de nye variablene.
 
-```{r, echo=FALSE}
-# bef <- bef %>% 
+```{r}
+bef <- bef %>%
+  mutate(
+    bef_K = ,
+    bef_M = ,
+    bef_KM = 
+  )
 ```
 
 ```{r}
