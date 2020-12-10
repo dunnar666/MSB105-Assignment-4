@@ -36,8 +36,7 @@ Vi bruker perioden januar 1999 t.o.m. mai 2014. Perioden har relativt få kommun
 ```{r}
 # combine med c(), rep() se argument each, str_pad()
 # til å lage 01, 02...11, 12
-tid_vec <- c(paste(rep(1999:2014, 1, each = 12), paste(c("M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "M09", "M10", "M11", "M12"))))
-tid_vec <- str_replace_all(tid_vec, fixed(" "), "")
+tid_vec <- paste(rep(1999:2014, each = 12), "M", str_pad(1:12, width = 2, pad = "0"), sep = "")
 tid_vec <- tid_vec[1:185]
 ```
 
@@ -149,8 +148,6 @@ Bruk c() og str_pad() til å lage en `alder_klasse_vec` på formen "000", "001",
 
 ```{r, echo=FALSE}
 alder_klasse_vec <- c(str_pad(1:104, width = 3, pad = "0"), "105+")
-
-
 ```
 
 ```{r}

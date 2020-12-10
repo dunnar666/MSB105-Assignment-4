@@ -1812,387 +1812,520 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShQeFdlYkFwaURhdGEpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmtuaXRyOjpvcHRzX2NodW5rJHNldChldmFsID0gVFJVRSlcbmBgYCJ9 -->
-<pre class="r"><code>library(PxWebApiData)
-library(tidyverse)
-knitr::opts_chunk$set(eval = TRUE)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="assignment-4-ssb-data" class="section level2">
-<h2>Assignment 4; ssb data</h2>
-<div id="data-hentet" class="section level3">
-<h3>Data hentet</h3>
-<p>Data sist hentet 30. november 2020. Dette dokumentet skal bare kjøres hvis nye data må hentes inn. <code>eval = FALSE</code> over i setup chunk må endres til <code>eval = TRUE</code>, så må setup chunk-en kjøres før en til slutt velger <code>Restart R and run all chunks</code> fra <code>Run</code> menyen.</p>
-</div>
-<div id="vektoren-med-de-418-kommunene-vi-vil-bruke" class="section level3">
-<h3>Vektoren med de 418 kommunene vi vil bruke</h3>
-<p>I perioden 1999 t.o.m 2014 er det relativt få kommunesammenslåinger. De som er har vi ekskludert fra vårt utvalg. Vi ender opp med en liste på 418 kommuner. Kommunenummer for disse er listet under.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua29tX3ZlYyA8LSBjKFwiMDEwMVwiLCAgXCIwMTA0XCIsIFwiMDEwNVwiLCBcIjAxMDZcIiwgXCIwMTExXCIsIFwiMDExOFwiLCBcIjAxMTlcIiwgXCIwMTIxXCIsIFwiMDEyMlwiLFwiMDEyM1wiLCBcIjAxMjRcIiwgXCIwMTI1XCIsIFwiMDEyN1wiLCBcIjAxMjhcIiwgXCIwMTM1XCIsIFwiMDEzNlwiLCBcIjAxMzdcIiwgXCIwMTM4XCIsIFwiMDIxMVwiLCBcIjAyMTNcIiwgXCIwMjE0XCIsIFwiMDIxNVwiLCBcIjAyMTZcIiwgXCIwMjE3XCIsIFwiMDIxOVwiLCBcIjAyMjBcIiwgXCIwMjIxXCIsIFwiMDIyNlwiLCBcIjAyMjdcIiwgXCIwMjI4XCIsIFwiMDIyOVwiLCBcIjAyMzBcIiwgXCIwMjMxXCIsIFwiMDIzM1wiLCBcIjAyMzRcIiwgXCIwMjM1XCIsIFwiMDIzNlwiLCBcIjAyMzdcIiwgXCIwMjM4XCIsIFwiMDIzOVwiLCBcIjA2MDJcIiwgXCIwNjA0XCIsIFwiMDYwNVwiLCBcIjA2MTJcIiwgXCIwNjE1XCIsIFwiMDYxNlwiLCBcIjA2MTdcIiwgXCIwNjE4XCIsIFwiMDYxOVwiLCBcIjA2MjBcIiwgXCIwNjIxXCIsIFwiMDYyMlwiLCBcIjA2MjNcIiwgXCIwNjI0XCIsIFwiMDYyNVwiLCBcIjA2MjZcIiwgXCIwNjI3XCIsIFwiMDYyOFwiLCBcIjA2MzFcIiwgXCIwNjMyXCIsIFwiMDYzM1wiLCBcIjAzMDFcIiwgXCIwNDAyXCIsIFwiMDQwM1wiLCBcIjA0MTJcIiwgXCIwNDE1XCIsIFwiMDQxN1wiLCBcIjA0MThcIiwgXCIwNDE5XCIsIFwiMDQyMFwiLCBcIjA0MjNcIiwgXCIwNDI1XCIsIFwiMDQyNlwiLCBcIjA0MjdcIiwgXCIwNDI4XCIsIFwiMDQyOVwiLCBcIjA0MzBcIiwgXCIwNDMyXCIsIFwiMDQzNFwiLCBcIjA0MzZcIiwgXCIwNDM3XCIsIFwiMDQzOFwiLCBcIjA0MzlcIiwgXCIwNDQxXCIsIFwiMDUwMVwiLCBcIjA1MDJcIiwgXCIwNTExXCIsIFwiMDUxMlwiLCBcIjA1MTNcIiwgXCIwNTE0XCIsIFwiMDUxNVwiLCBcIjA1MTdcIiwgIFwiMDUxOVwiLCBcIjA1MjBcIiwgXCIwNTIxXCIsIFwiMDUyMlwiLCBcIjA1MjhcIiwgXCIwNTI5XCIsIFwiMDUzMlwiLCBcIjA1MzNcIiwgXCIwNTM0XCIsIFwiMDUzNlwiLCBcIjA1MzhcIiwgXCIwNTQwXCIsIFwiMDU0MVwiLCBcIjA1NDJcIiwgXCIwNTQzXCIsIFwiMDU0NFwiLCBcIjA1NDVcIiwgXCIwNzAyXCIsIFwiMDcwNlwiLCBcIjA3MDlcIiwgXCIwNzExXCIsIFwiMDcxM1wiLCBcIjA3MTRcIiwgXCIwNzE5XCIsIFwiMDcyMFwiLCBcIjA3MjJcIiwgXCIwNzIzXCIsIFwiMDcyOFwiLCBcIjA4MDVcIiwgXCIwODA2XCIsIFwiMDgwN1wiLCBcIjA4MTFcIiwgXCIwODE0XCIsIFwiMDgxNVwiLCBcIjA4MTdcIiwgXCIwODE5XCIsIFwiMDgyMVwiLCBcIjA4MjJcIiwgXCIwODI2XCIsIFwiMDgyN1wiLCBcIjA4MjhcIiwgXCIwODI5XCIsIFwiMDgzMFwiLCBcIjA4MzFcIiwgXCIwODMzXCIsIFwiMDgzNFwiLCBcIjA5MDFcIiwgXCIwOTA0XCIsIFwiMDkwNlwiLCBcIjA5MTFcIiwgXCIwOTEyXCIsIFwiMDkxNFwiLCBcIjA5MTlcIiwgXCIwOTI2XCIsIFwiMDkyOFwiLCBcIjA5MjlcIiwgXCIwOTM1XCIsIFwiMDkzN1wiLCBcIjA5MzhcIiwgXCIwOTQwXCIsIFwiMDk0MVwiLCBcIjEwMDFcIiwgXCIxMDAyXCIsIFwiMTAwM1wiLCBcIjEwMDRcIiwgXCIxMDE0XCIsIFwiMTAxN1wiLCBcIjEwMThcIiwgXCIxMDIxXCIsIFwiMTAyNlwiLCBcIjEwMjdcIiwgXCIxMDI5XCIsIFwiMTAzMlwiLCBcIjEwMzRcIiwgXCIxMDM3XCIsIFwiMTA0NlwiLCBcIjExMDFcIiwgXCIxMTAyXCIsIFwiMTEwM1wiLCBcIjExMDZcIiwgXCIxMTExXCIsIFwiMTExMlwiLCBcIjExMTRcIiwgXCIxMTE5XCIsIFwiMTEyMFwiLCBcIjExMjFcIiwgXCIxMTIyXCIsIFwiMTEyNFwiLCBcIjExMjdcIiwgXCIxMTI5XCIsIFwiMTEzMFwiLCBcIjExMzNcIiwgXCIxMTM0XCIsIFwiMTEzNVwiLCBcIjExNDFcIiwgXCIxMTQyXCIsIFwiMTE0NFwiLCBcIjExNDVcIiwgXCIxMTQ2XCIsIFwiMTE0OVwiLCBcIjExNTFcIiwgXCIxMjAxXCIsIFwiMTIxMVwiLCBcIjEyMTZcIiwgXCIxMjE5XCIsIFwiMTIyMVwiLCBcIjEyMjJcIiwgXCIxMjIzXCIsIFwiMTIyNFwiLCBcIjEyMjdcIiwgXCIxMjI4XCIsIFwiMTIzMVwiLCBcIjEyMzJcIiwgXCIxMjMzXCIsIFwiMTIzNFwiLCBcIjEyMzVcIiwgXCIxMjM4XCIsIFwiMTI0MVwiLCBcIjEyNDJcIiwgXCIxMjQzXCIsIFwiMTI0NFwiLCBcIjEyNDVcIiwgXCIxMjQ2XCIsIFwiMTI0N1wiLCBcIjEyNTFcIiwgXCIxMjUyXCIsIFwiMTI1M1wiLCBcIjEyNTZcIiwgXCIxMjU5XCIsIFwiMTI2MFwiLCBcIjEyNjNcIiwgXCIxMjY0XCIsIFwiMTI2NVwiLCBcIjEyNjZcIiwgXCIxNDAxXCIsIFwiMTQxMVwiLCBcIjE0MTJcIiwgXCIxNDEzXCIsIFwiMTQxNlwiLCBcIjE0MTdcIiwgXCIxNDE4XCIsIFwiMTQxOVwiLCBcIjE0MjBcIiwgXCIxNDIxXCIsIFwiMTQyMlwiLCBcIjE0MjRcIiwgXCIxNDI2XCIsIFwiMTQyOFwiLCBcIjE0MjlcIiwgXCIxNDMwXCIsIFwiMTQzMVwiLCBcIjE0MzJcIiwgXCIxNDMzXCIsIFwiMTQzOFwiLCBcIjE0MzlcIiwgXCIxNDQxXCIsIFwiMTQ0M1wiLCBcIjE0NDRcIiwgXCIxNDQ1XCIsIFwiMTQ0OVwiLCBcIjE1MDJcIiwgXCIxNTA0XCIsICBcIjE1MTFcIiwgXCIxNTE0XCIsIFwiMTUxNVwiLCBcIjE1MTZcIiwgXCIxNTE3XCIsIFwiMTUxOVwiLCBcIjE1MjBcIiwgXCIxNTIzXCIsIFwiMTUyNFwiLCBcIjE1MjVcIiwgXCIxNTI2XCIsIFwiMTUyOFwiLCBcIjE1MjlcIiwgXCIxNTMxXCIsIFwiMTUzMlwiLCBcIjE1MzRcIiwgXCIxNTM1XCIsIFwiMTUzOVwiLCBcIjE1NDNcIiwgXCIxNTQ1XCIsIFwiMTU0NlwiLCBcIjE1NDdcIiwgXCIxNTQ4XCIsIFwiMTU1MVwiLCBcIjE1NTRcIiwgXCIxNTU3XCIsIFwiMTU2MFwiLCBcIjE1NjNcIiwgXCIxNTY2XCIsIFwiMTU2N1wiLCBcIjE1NzFcIiwgXCIxNTczXCIsIFwiMTYwMVwiLCBcIjE2MTJcIiwgXCIxNjEzXCIsIFwiMTYxN1wiLCBcIjE2MjBcIiwgXCIxNjIxXCIsIFwiMTYyMlwiLCBcIjE2MjRcIiwgXCIxNjI3XCIsIFwiMTYzMFwiLCBcIjE2MzJcIiwgXCIxNjMzXCIsIFwiMTYzNFwiLCBcIjE2MzVcIiwgXCIxNjM2XCIsIFwiMTYzOFwiLCBcIjE2NDBcIiwgXCIxNjQ0XCIsIFwiMTY0OFwiLCBcIjE2NTNcIiwgXCIxNjU3XCIsIFwiMTY2MlwiLCBcIjE2NjNcIiwgXCIxNjY0XCIsIFwiMTY2NVwiLCBcIjE3MDJcIiwgXCIxNzAzXCIsIFwiMTcxMVwiLCBcIjE3MTRcIiwgXCIxNzE3XCIsIFwiMTcxOFwiLCBcIjE3MTlcIiwgXCIxNzIxXCIsIFwiMTcyNFwiLCBcIjE3MjVcIiwgXCIxNzM2XCIsIFwiMTczOFwiLCBcIjE3MzlcIiwgXCIxNzQwXCIsIFwiMTc0MlwiLCBcIjE3NDNcIiwgXCIxNzQ0XCIsIFwiMTc0OFwiLCBcIjE3NDlcIiwgXCIxNzUwXCIsIFwiMTc1MVwiLCBcIjE3NTVcIiwgXCIxODA0XCIsIFwiMTgwNVwiLCBcIjE4MTFcIiwgXCIxODEyXCIsIFwiMTgxNVwiLCBcIjE4MTZcIiwgXCIxODE4XCIsIFwiMTgyMFwiLCBcIjE4MjJcIiwgXCIxODI0XCIsIFwiMTgyNVwiLCBcIjE4MjZcIiwgXCIxODI3XCIsIFwiMTgyOFwiLCBcIjE4MzJcIiwgXCIxODMzXCIsIFwiMTgzNFwiLCBcIjE4MzVcIiwgXCIxODM2XCIsIFwiMTgzN1wiLCBcIjE4MzhcIiwgXCIxODM5XCIsIFwiMTg0MFwiLCBcIjE4NDFcIiwgXCIxODQ1XCIsIFwiMTg0OFwiLCBcIjE4NDlcIiwgXCIxODUwXCIsIFwiMTg1MVwiLCBcIjE4NTJcIiwgXCIxODUzXCIsIFwiMTg1NFwiLCBcIjE4NTZcIiwgXCIxODU3XCIsIFwiMTg1OVwiLCBcIjE4NjBcIiwgXCIxODY1XCIsIFwiMTg2NlwiLCBcIjE4NjdcIiwgXCIxODY4XCIsIFwiMTg3MFwiLCBcIjE4NzFcIiwgXCIxODc0XCIsIFwiMTkwMlwiLCBcIjE5MTFcIiwgXCIxOTEzXCIsIFwiMTkxN1wiLCBcIjE5MTlcIiwgXCIxOTIwXCIsIFwiMTkyMlwiLCBcIjE5MjNcIiwgXCIxOTI0XCIsIFwiMTkyNVwiLCBcIjE5MjZcIiwgXCIxOTI3XCIsIFwiMTkyOFwiLCBcIjE5MjlcIiwgXCIxOTMxXCIsIFwiMTkzM1wiLCBcIjE5MzZcIiwgXCIxOTM4XCIsIFwiMTkzOVwiLCBcIjE5NDBcIiwgXCIxOTQxXCIsIFwiMTk0MlwiLCBcIjE5NDNcIiwgXCIyMDAyXCIsIFwiMjAwM1wiLCBcIjIwMDRcIiwgXCIyMDExXCIsIFwiMjAxMlwiLCBcIjIwMTRcIiwgXCIyMDE1XCIsIFwiMjAxN1wiLCBcIjIwMThcIiwgXCIyMDE5XCIsIFwiMjAyMFwiLCBcIjIwMjFcIiwgXCIyMDIyXCIsIFwiMjAyM1wiLCBcIjIwMjRcIiwgXCIyMDI1XCIsIFwiMjAyN1wiLCBcIjIwMjhcIiwgXCIyMDMwXCIpXG5gYGAifQ== -->
-<pre class="r"><code>kom_vec &lt;- c(&quot;0101&quot;,  &quot;0104&quot;, &quot;0105&quot;, &quot;0106&quot;, &quot;0111&quot;, &quot;0118&quot;, &quot;0119&quot;, &quot;0121&quot;, &quot;0122&quot;,&quot;0123&quot;, &quot;0124&quot;, &quot;0125&quot;, &quot;0127&quot;, &quot;0128&quot;, &quot;0135&quot;, &quot;0136&quot;, &quot;0137&quot;, &quot;0138&quot;, &quot;0211&quot;, &quot;0213&quot;, &quot;0214&quot;, &quot;0215&quot;, &quot;0216&quot;, &quot;0217&quot;, &quot;0219&quot;, &quot;0220&quot;, &quot;0221&quot;, &quot;0226&quot;, &quot;0227&quot;, &quot;0228&quot;, &quot;0229&quot;, &quot;0230&quot;, &quot;0231&quot;, &quot;0233&quot;, &quot;0234&quot;, &quot;0235&quot;, &quot;0236&quot;, &quot;0237&quot;, &quot;0238&quot;, &quot;0239&quot;, &quot;0602&quot;, &quot;0604&quot;, &quot;0605&quot;, &quot;0612&quot;, &quot;0615&quot;, &quot;0616&quot;, &quot;0617&quot;, &quot;0618&quot;, &quot;0619&quot;, &quot;0620&quot;, &quot;0621&quot;, &quot;0622&quot;, &quot;0623&quot;, &quot;0624&quot;, &quot;0625&quot;, &quot;0626&quot;, &quot;0627&quot;, &quot;0628&quot;, &quot;0631&quot;, &quot;0632&quot;, &quot;0633&quot;, &quot;0301&quot;, &quot;0402&quot;, &quot;0403&quot;, &quot;0412&quot;, &quot;0415&quot;, &quot;0417&quot;, &quot;0418&quot;, &quot;0419&quot;, &quot;0420&quot;, &quot;0423&quot;, &quot;0425&quot;, &quot;0426&quot;, &quot;0427&quot;, &quot;0428&quot;, &quot;0429&quot;, &quot;0430&quot;, &quot;0432&quot;, &quot;0434&quot;, &quot;0436&quot;, &quot;0437&quot;, &quot;0438&quot;, &quot;0439&quot;, &quot;0441&quot;, &quot;0501&quot;, &quot;0502&quot;, &quot;0511&quot;, &quot;0512&quot;, &quot;0513&quot;, &quot;0514&quot;, &quot;0515&quot;, &quot;0517&quot;,  &quot;0519&quot;, &quot;0520&quot;, &quot;0521&quot;, &quot;0522&quot;, &quot;0528&quot;, &quot;0529&quot;, &quot;0532&quot;, &quot;0533&quot;, &quot;0534&quot;, &quot;0536&quot;, &quot;0538&quot;, &quot;0540&quot;, &quot;0541&quot;, &quot;0542&quot;, &quot;0543&quot;, &quot;0544&quot;, &quot;0545&quot;, &quot;0702&quot;, &quot;0706&quot;, &quot;0709&quot;, &quot;0711&quot;, &quot;0713&quot;, &quot;0714&quot;, &quot;0719&quot;, &quot;0720&quot;, &quot;0722&quot;, &quot;0723&quot;, &quot;0728&quot;, &quot;0805&quot;, &quot;0806&quot;, &quot;0807&quot;, &quot;0811&quot;, &quot;0814&quot;, &quot;0815&quot;, &quot;0817&quot;, &quot;0819&quot;, &quot;0821&quot;, &quot;0822&quot;, &quot;0826&quot;, &quot;0827&quot;, &quot;0828&quot;, &quot;0829&quot;, &quot;0830&quot;, &quot;0831&quot;, &quot;0833&quot;, &quot;0834&quot;, &quot;0901&quot;, &quot;0904&quot;, &quot;0906&quot;, &quot;0911&quot;, &quot;0912&quot;, &quot;0914&quot;, &quot;0919&quot;, &quot;0926&quot;, &quot;0928&quot;, &quot;0929&quot;, &quot;0935&quot;, &quot;0937&quot;, &quot;0938&quot;, &quot;0940&quot;, &quot;0941&quot;, &quot;1001&quot;, &quot;1002&quot;, &quot;1003&quot;, &quot;1004&quot;, &quot;1014&quot;, &quot;1017&quot;, &quot;1018&quot;, &quot;1021&quot;, &quot;1026&quot;, &quot;1027&quot;, &quot;1029&quot;, &quot;1032&quot;, &quot;1034&quot;, &quot;1037&quot;, &quot;1046&quot;, &quot;1101&quot;, &quot;1102&quot;, &quot;1103&quot;, &quot;1106&quot;, &quot;1111&quot;, &quot;1112&quot;, &quot;1114&quot;, &quot;1119&quot;, &quot;1120&quot;, &quot;1121&quot;, &quot;1122&quot;, &quot;1124&quot;, &quot;1127&quot;, &quot;1129&quot;, &quot;1130&quot;, &quot;1133&quot;, &quot;1134&quot;, &quot;1135&quot;, &quot;1141&quot;, &quot;1142&quot;, &quot;1144&quot;, &quot;1145&quot;, &quot;1146&quot;, &quot;1149&quot;, &quot;1151&quot;, &quot;1201&quot;, &quot;1211&quot;, &quot;1216&quot;, &quot;1219&quot;, &quot;1221&quot;, &quot;1222&quot;, &quot;1223&quot;, &quot;1224&quot;, &quot;1227&quot;, &quot;1228&quot;, &quot;1231&quot;, &quot;1232&quot;, &quot;1233&quot;, &quot;1234&quot;, &quot;1235&quot;, &quot;1238&quot;, &quot;1241&quot;, &quot;1242&quot;, &quot;1243&quot;, &quot;1244&quot;, &quot;1245&quot;, &quot;1246&quot;, &quot;1247&quot;, &quot;1251&quot;, &quot;1252&quot;, &quot;1253&quot;, &quot;1256&quot;, &quot;1259&quot;, &quot;1260&quot;, &quot;1263&quot;, &quot;1264&quot;, &quot;1265&quot;, &quot;1266&quot;, &quot;1401&quot;, &quot;1411&quot;, &quot;1412&quot;, &quot;1413&quot;, &quot;1416&quot;, &quot;1417&quot;, &quot;1418&quot;, &quot;1419&quot;, &quot;1420&quot;, &quot;1421&quot;, &quot;1422&quot;, &quot;1424&quot;, &quot;1426&quot;, &quot;1428&quot;, &quot;1429&quot;, &quot;1430&quot;, &quot;1431&quot;, &quot;1432&quot;, &quot;1433&quot;, &quot;1438&quot;, &quot;1439&quot;, &quot;1441&quot;, &quot;1443&quot;, &quot;1444&quot;, &quot;1445&quot;, &quot;1449&quot;, &quot;1502&quot;, &quot;1504&quot;,  &quot;1511&quot;, &quot;1514&quot;, &quot;1515&quot;, &quot;1516&quot;, &quot;1517&quot;, &quot;1519&quot;, &quot;1520&quot;, &quot;1523&quot;, &quot;1524&quot;, &quot;1525&quot;, &quot;1526&quot;, &quot;1528&quot;, &quot;1529&quot;, &quot;1531&quot;, &quot;1532&quot;, &quot;1534&quot;, &quot;1535&quot;, &quot;1539&quot;, &quot;1543&quot;, &quot;1545&quot;, &quot;1546&quot;, &quot;1547&quot;, &quot;1548&quot;, &quot;1551&quot;, &quot;1554&quot;, &quot;1557&quot;, &quot;1560&quot;, &quot;1563&quot;, &quot;1566&quot;, &quot;1567&quot;, &quot;1571&quot;, &quot;1573&quot;, &quot;1601&quot;, &quot;1612&quot;, &quot;1613&quot;, &quot;1617&quot;, &quot;1620&quot;, &quot;1621&quot;, &quot;1622&quot;, &quot;1624&quot;, &quot;1627&quot;, &quot;1630&quot;, &quot;1632&quot;, &quot;1633&quot;, &quot;1634&quot;, &quot;1635&quot;, &quot;1636&quot;, &quot;1638&quot;, &quot;1640&quot;, &quot;1644&quot;, &quot;1648&quot;, &quot;1653&quot;, &quot;1657&quot;, &quot;1662&quot;, &quot;1663&quot;, &quot;1664&quot;, &quot;1665&quot;, &quot;1702&quot;, &quot;1703&quot;, &quot;1711&quot;, &quot;1714&quot;, &quot;1717&quot;, &quot;1718&quot;, &quot;1719&quot;, &quot;1721&quot;, &quot;1724&quot;, &quot;1725&quot;, &quot;1736&quot;, &quot;1738&quot;, &quot;1739&quot;, &quot;1740&quot;, &quot;1742&quot;, &quot;1743&quot;, &quot;1744&quot;, &quot;1748&quot;, &quot;1749&quot;, &quot;1750&quot;, &quot;1751&quot;, &quot;1755&quot;, &quot;1804&quot;, &quot;1805&quot;, &quot;1811&quot;, &quot;1812&quot;, &quot;1815&quot;, &quot;1816&quot;, &quot;1818&quot;, &quot;1820&quot;, &quot;1822&quot;, &quot;1824&quot;, &quot;1825&quot;, &quot;1826&quot;, &quot;1827&quot;, &quot;1828&quot;, &quot;1832&quot;, &quot;1833&quot;, &quot;1834&quot;, &quot;1835&quot;, &quot;1836&quot;, &quot;1837&quot;, &quot;1838&quot;, &quot;1839&quot;, &quot;1840&quot;, &quot;1841&quot;, &quot;1845&quot;, &quot;1848&quot;, &quot;1849&quot;, &quot;1850&quot;, &quot;1851&quot;, &quot;1852&quot;, &quot;1853&quot;, &quot;1854&quot;, &quot;1856&quot;, &quot;1857&quot;, &quot;1859&quot;, &quot;1860&quot;, &quot;1865&quot;, &quot;1866&quot;, &quot;1867&quot;, &quot;1868&quot;, &quot;1870&quot;, &quot;1871&quot;, &quot;1874&quot;, &quot;1902&quot;, &quot;1911&quot;, &quot;1913&quot;, &quot;1917&quot;, &quot;1919&quot;, &quot;1920&quot;, &quot;1922&quot;, &quot;1923&quot;, &quot;1924&quot;, &quot;1925&quot;, &quot;1926&quot;, &quot;1927&quot;, &quot;1928&quot;, &quot;1929&quot;, &quot;1931&quot;, &quot;1933&quot;, &quot;1936&quot;, &quot;1938&quot;, &quot;1939&quot;, &quot;1940&quot;, &quot;1941&quot;, &quot;1942&quot;, &quot;1943&quot;, &quot;2002&quot;, &quot;2003&quot;, &quot;2004&quot;, &quot;2011&quot;, &quot;2012&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;, &quot;2020&quot;, &quot;2021&quot;, &quot;2022&quot;, &quot;2023&quot;, &quot;2024&quot;, &quot;2025&quot;, &quot;2027&quot;, &quot;2028&quot;, &quot;2030&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVuZ3RoKGtvbV92ZWMpXG5gYGAifQ== -->
-<pre class="r"><code>length(kom_vec)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQxOFxuIn0= -->
-<pre><code>[1] 418</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdkYnBseXInOlxuICBtZXRob2QgICAgICAgICBmcm9tXG4gIHByaW50LnRibF9sYXp5ICAgICBcbiAgcHJpbnQudGJsX3NxbCAgICAgIFxuLS0gQXR0YWNoaW5nIHBhY2thZ2VzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSB0aWR5dmVyc2UgMS4zLjAgLS1cbnYgZ2dwbG90MiAzLjMuMiAgICAgdiBwdXJyciAgIDAuMy40XG52IHRpYmJsZSAgMy4wLjQgICAgIHYgZHBseXIgICAxLjAuMlxudiB0aWR5ciAgIDEuMS4yICAgICB2IHN0cmluZ3IgMS40LjBcbnYgcmVhZHIgICAxLjQuMCAgICAgdiBmb3JjYXRzIDAuNS4wXG4tLSBDb25mbGljdHMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIHRpZHl2ZXJzZV9jb25mbGljdHMoKSAtLVxueCBkcGx5cjo6ZmlsdGVyKCkgbWFza3Mgc3RhdHM6OmZpbHRlcigpXG54IGRwbHlyOjpsYWcoKSAgICBtYXNrcyBzdGF0czo6bGFnKClcbiJ9 -->
+<pre><code>Registered S3 methods overwritten by &#39;dbplyr&#39;:
+  method         from
+  print.tbl_lazy     
+  print.tbl_sql      
+-- Attaching packages ------------------------------------------------------------------------------------------------ tidyverse 1.3.0 --
+v ggplot2 3.3.2     v purrr   0.3.4
+v tibble  3.0.4     v dplyr   1.0.2
+v tidyr   1.1.2     v stringr 1.4.0
+v readr   1.4.0     v forcats 0.5.0
+-- Conflicts --------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="t.o.m.-2014-månedsbasis" class="section level3">
-<h3>1999 t.o.m. 2014 månedsbasis</h3>
-<p>Vi bruker perioden januar 1999 t.o.m. mai 2014. Perioden har relativt få kommunejusteringer og god tilgang på data. Lag en vektor <code>tid_vec</code> på formen “1999M01”, “1999M02”, “1999M03”, … “2014M04”, &quot;2014M05. Bruk c(), paste(), rep() og str_pad(). Husk at rep() har et each argument. Et tips er å lage opp til 2014M12 og så fjerne de siste 7 elementene.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjb21iaW5lIG1lZCBjKCksIHJlcCgpIHNlIGFyZ3VtZW50IGVhY2gsIHN0cl9wYWQoKVxuIyB0aWwgw6UgbGFnZSAwMSwgMDIuLi4xMSwgMTJcbnRpZF92ZWMgPC0gcGFzdGUocmVwKDE5OTk6MjAxNCwgZWFjaCA9IDEyKSwgXCJNXCIsIHN0cl9wYWQoMToxMiwgd2lkdGggPSAyLCBwYWQgPSBcIjBcIiksIHNlcCA9IFwiXCIpXG50aWRfdmVjIDwtIHRpZF92ZWNbMToxODVdXG5gYGAifQ== -->
-<pre class="r"><code># combine med c(), rep() se argument each, str_pad()
-# til å lage 01, 02...11, 12
-tid_vec &lt;- paste(rep(1999:2014, each = 12), &quot;M&quot;, str_pad(1:12, width = 2, pad = &quot;0&quot;), sep = &quot;&quot;)
-tid_vec &lt;- tid_vec[1:185]</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsdWJyaWRhdGUpXG5gYGAifQ== -->
+<pre class="r"><code>library(lubridate)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVuZ3RoKHRpZF92ZWMpXG5gYGAifQ== -->
-<pre class="r"><code>length(tid_vec)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE4NVxuIn0= -->
-<pre><code>[1] 185</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYyhoZWFkKHRpZF92ZWMsIG4gPSAxNCksIFwiLi4uXCIsIHRhaWwodGlkX3ZlYywgbiA9IDE0KSlcbmBgYCJ9 -->
-<pre class="r"><code>c(head(tid_vec, n = 14), &quot;...&quot;, tail(tid_vec, n = 14))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIjE5OTlNMDFcIiBcIjE5OTlNMDJcIiBcIjE5OTlNMDNcIiBcIjE5OTlNMDRcIiBcIjE5OTlNMDVcIiBcIjE5OTlNMDZcIiBcIjE5OTlNMDdcIiBcIjE5OTlNMDhcIiBcIjE5OTlNMDlcIiBcIjE5OTlNMTBcIiBcIjE5OTlNMTFcIiBcIjE5OTlNMTJcIlxuWzEzXSBcIjIwMDBNMDFcIiBcIjIwMDBNMDJcIiBcIi4uLlwiICAgICBcIjIwMTNNMDRcIiBcIjIwMTNNMDVcIiBcIjIwMTNNMDZcIiBcIjIwMTNNMDdcIiBcIjIwMTNNMDhcIiBcIjIwMTNNMDlcIiBcIjIwMTNNMTBcIiBcIjIwMTNNMTFcIiBcIjIwMTNNMTJcIlxuWzI1XSBcIjIwMTRNMDFcIiBcIjIwMTRNMDJcIiBcIjIwMTRNMDNcIiBcIjIwMTRNMDRcIiBcIjIwMTRNMDVcIlxuIn0= -->
-<pre><code> [1] &quot;1999M01&quot; &quot;1999M02&quot; &quot;1999M03&quot; &quot;1999M04&quot; &quot;1999M05&quot; &quot;1999M06&quot; &quot;1999M07&quot; &quot;1999M08&quot; &quot;1999M09&quot; &quot;1999M10&quot; &quot;1999M11&quot; &quot;1999M12&quot;
-[13] &quot;2000M01&quot; &quot;2000M02&quot; &quot;...&quot;     &quot;2013M04&quot; &quot;2013M05&quot; &quot;2013M06&quot; &quot;2013M07&quot; &quot;2013M08&quot; &quot;2013M09&quot; &quot;2013M10&quot; &quot;2013M11&quot; &quot;2013M12&quot;
-[25] &quot;2014M01&quot; &quot;2014M02&quot; &quot;2014M03&quot; &quot;2014M04&quot; &quot;2014M05&quot;</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="kjønn-og-aldersgruppe" class="section level3">
-<h3>Kjønn og aldersgruppe</h3>
-<p>Vi trenger også disse som jeg har definert for dere.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxkZXJfdmVjIDwtIGMoXCIxNS03NFwiLCBcIjE1LTI5XCIsIFwiMzAtNzRcIilcbmtqb25uX3ZlYyA8LSBjKFwiTWVublwiLCBcIkt2aW5uZXJcIilcbmBgYCJ9 -->
-<pre class="r"><code>alder_vec &lt;- c(&quot;15-74&quot;, &quot;15-29&quot;, &quot;30-74&quot;)
-kjonn_vec &lt;- c(&quot;Menn&quot;, &quot;Kvinner&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="tabell-10540-arbeidsløse-i-per-kommune-fordelt-på-alderskategorier-månedlig-1991m01-2014m05" class="section level3">
-<h3>Tabell 10540, arbeidsløse i %, per kommune, fordelt på alderskategorier, månedlig 1991M01-2014M05</h3>
-<p>Arbeidsløshet i % for alderskategoriene “15-74 år” “15-29 år” og “30-74 år”.</p>
-<p>Tabellen er på <code>418*185*3=231990</code> rekker som er under grensen på 800000 rekker. Kan derfor hente alt på en gang.</p>
-<p><code>ApiData()</code> returnerer en liste med to elementer, hhv. det som kalles variabel-beskrivelse og verdier. For oss er det greit å hente <code>region</code> som er kommunenavn, alder og kjønn (“Kvinner”, “Menn”) fra den første og resten fra den andre listen. Husk at du kan hente innholdet i de to (dataframe) frem med hhv. <code>[[1]]</code> og <code>[[2]]</code>.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJibF9wX2FsZGVyIDwtIEFwaURhdGEoXG4gICAgMTA1NDAsXG4gICAgUmVnaW9uID0ga29tX3ZlYyxcbiAgICBUaWQgPSB0aWRfdmVjLFxuICAgIEFsZGVyID0gYWxkZXJfdmVjXG4gIClcblxuZGZfYXJibF9wX2FsZGVyIDwtIGRhdGEuZnJhbWUoXG4gICAga25yID0gYXJibF9wX2FsZGVyW1syXV0kUmVnaW9uLFxuICAgIGtuYXZuID0gYXJibF9wX2FsZGVyW1sxXV0kcmVnaW9uLFxuICAgIGFsZGVyID0gYXJibF9wX2FsZGVyW1sxXV0kYWxkZXIsXG4gICAgdGlkID0gYXJibF9wX2FsZGVyW1syXV0kVGlkLFxuICAgICMgYXJiZWlkc2zDuHNlIGkgcHJvc2VudFxuICAgIGFscCA9IGFyYmxfcF9hbGRlcltbMl1dJHZhbHVlXG4pXG5kaW0oZGZfYXJibF9wX2FsZGVyKVxuYGBgIn0= -->
-<pre class="r"><code>arbl_p_alder &lt;- ApiData(
-    10540,
-    Region = kom_vec,
-    Tid = tid_vec,
-    Alder = alder_vec
-  )
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog46S847ixbHVicmlkYXRl46S847iyXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g46S847ixcGFja2FnZTpiYXNl46S847iyOlxuXG4gICAgZGF0ZSwgaW50ZXJzZWN0LCBzZXRkaWZmLCB1bmlvblxuIn0= -->
+<pre><code>
+Attaching package: 㤼㸱lubridate㤼㸲
 
-df_arbl_p_alder &lt;- data.frame(
-    knr = arbl_p_alder[[2]]$Region,
-    knavn = arbl_p_alder[[1]]$region,
-    alder = arbl_p_alder[[1]]$alder,
-    tid = arbl_p_alder[[2]]$Tid,
-    # arbeidsløse i prosent
-    alp = arbl_p_alder[[2]]$value
-)
-dim(df_arbl_p_alder)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDIzMTk5MCAgICAgIDVcbiJ9 -->
-<pre><code>[1] 231990      5</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="tabell-04471-arbeidsløse-i-per-kommune-etter-kjønn-månedlig-1991m01-2014m05" class="section level3">
-<h3>Tabell 04471, arbeidsløse i %, per kommune, etter kjønn, månedlig 1991M01-2014M05</h3>
-<p>Her fordelt på kjønn. Vi har <code>418*185*2=154660</code> rekker som er under grensen på 800k. Kan derfor hente alt på en gang. Det er nå ikke lenger Alder som er statistikk variabel så den må byttes ut med <code>Kjonn =</code></p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2FyYmxfcF9ram9ubilcbmBgYCJ9 -->
-<pre class="r"><code>dim(df_arbl_p_kjonn)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE1NDY2MCAgICAgIDVcbiJ9 -->
-<pre><code>[1] 154660      5</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYXJibF9wX2tqb25uKVxuYGBgIn0= -->
-<pre class="r"><code>names(df_arbl_p_kjonn)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJram9ublwiIFwidGlkXCIgICBcImFscF9rXCJcbiJ9 -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;kjonn&quot; &quot;tid&quot;   &quot;alp_k&quot;</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="tabell-10594-antall-arbeidsløse-per-kommune-etter-kjønn-månedlig-1991m01-2014m05" class="section level3">
-<h3>Tabell 10594, Antall arbeidsløse per kommune, etter kjønn, månedlig 1991M01-2014M05</h3>
-<p>Antall rekker vil være <code>418*185*2=154660</code>.</p>
-<p>Igjen er det <code>Kjonn</code> og ikke <code>Alder</code> som er statistikk-variabel.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJibCA8LSBBcGlEYXRhKFxuICAgIDEwNTk0LFxuICAgIFJlZ2lvbiA9IGtvbV92ZWMsXG4gICAgVGlkID0gdGlkX3ZlYyxcbiAgICBLam9ubiA9IGtqb25uX3ZlYylcblxuZGZfYXJibCA8LSBkYXRhLmZyYW1lKFxuICAgIGtuciA9IGFyYmxbWzJdXSRSZWdpb24sXG4gICAga25hdm4gPSBhcmJsW1sxXV0kcmVnaW9uLFxuICAgIHRpZCA9IGFyYmxbWzJdXSRUaWQsXG4gICAga2pvbm4gPSBhcmJsW1sxXV0ka2rDuG5uLFxuICAgICMgYXJiZWlkc2zDuHNlIGkgcHJvc2VudFxuICAgIGFsID0gYXJibFtbMV1dJHZhbHVlXG4pXG5gYGAifQ== -->
-<pre class="r"><code>arbl &lt;- ApiData(
-    10594,
-    Region = kom_vec,
-    Tid = tid_vec,
-    Kjonn = kjonn_vec)
+The following objects are masked from 㤼㸱package:base㤼㸲:
 
-df_arbl &lt;- data.frame(
-    knr = arbl[[2]]$Region,
-    knavn = arbl[[1]]$region,
-    tid = arbl[[2]]$Tid,
-    kjonn = arbl[[1]]$kjønn,
-    # arbeidsløse i prosent
-    al = arbl[[1]]$value
+    date, intersect, setdiff, union</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="assignment-4del-2-tidy-data" class="section level1">
+<h1>Assignment 4;del 2; Tidy data</h1>
+<p>I denne filen skal vi lese inn rådataene vi hentet fra SSB i <code>get-ssb-data.Rmd</code>. Vi skal gjøre dataene «tidy» og kombinere arbeidsløshetsdataene som er månedlige til en stor «tidy» tibble. Videre skal vi kombinere befolkningsdataene som er årlige til en stor «tidy» tibble. Disse to tibble-ene skal så lagres som <code>.csv</code> filer i mappen data. Disse to vil så senere bli lest inn i filen <code>model.Rmd</code> og være utgangspunktet for vårt modelleringsarbeide.</p>
+<p>Leser inn filene</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYXJibF9wX2FsZGVyIDwtIHJlYWRfY3N2KGZpbGUgPSBcInNzYl9kZl9hcmJsX3BfYWxkZXIuY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code>df_arbl_p_alder &lt;- read_csv(file = &quot;ssb_df_arbl_p_alder.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbmNvbHMoXG4gIGtuciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAga25hdm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIGFsZGVyID0gY29sX2NoYXJhY3RlcigpLFxuICB0aWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGFscCA9IGNvbF9kb3VibGUoKVxuKVxuIn0= -->
+<pre><code>
+-- Column specification ------------------------------
+cols(
+  knr = col_character(),
+  knavn = col_character(),
+  alder = col_character(),
+  tid = col_character(),
+  alp = col_double()
 )</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2FyYmwpXG5gYGAifQ== -->
-<pre class="r"><code>dim(df_arbl)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE1NDY2MCAgICAgIDVcbiJ9 -->
-<pre><code>[1] 154660      5</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYXJibClcbmBgYCJ9 -->
-<pre class="r"><code>names(df_arbl)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYXJibF9wX2tqb25uIDwtIHJlYWRfY3N2KGZpbGUgPSBcInNzYl9kZl9hcmJsX3Bfa2pvbm4uY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code>df_arbl_p_kjonn &lt;- read_csv(file = &quot;ssb_df_arbl_p_kjonn.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJ0aWRcIiAgIFwia2pvbm5cIiBcImFsXCIgICBcbiJ9 -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;tid&quot;   &quot;kjonn&quot; &quot;al&quot;   </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="tabell-07459-befolkning-årsklasser-000-105-for-årene-1999-2014" class="section level3">
-<h3>Tabell 07459, Befolkning årsklasser 000-105+ for årene 1999-2014</h3>
-<p>Antall rekker blir <code>418*16*106*2=1417856</code> som er mer enn maks grensen på 800k. Splitter derfor på kjønn og får 708928 rekker for hvert kjønn.</p>
-<p>Bruk c() og str_pad() til å lage en <code>alder_klasse_vec</code> på formen “000”, “001”, “002” … “104”, “105+”. Bruk denne som verdi for Alder i <code>ApiData()</code> kallet, dvs. <code>Alder = alder_klasse_vec</code>. Bruk hhv. Kjonn = “Kvinner” og Kjonn = “Menn” for å hente de respektive datasettene.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVuZ3RoKGFsZGVyX2tsYXNzZV92ZWMpXG5gYGAifQ== -->
-<pre class="r"><code>length(alder_klasse_vec)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEwNVxuIn0= -->
-<pre><code>[1] 105</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYyhoZWFkKGFsZGVyX2tsYXNzZV92ZWMsIG4gPSA1KSwgXCIuLi5cIiwgdGFpbChhbGRlcl9rbGFzc2VfdmVjLCBuID0gNSkpXG5gYGAifQ== -->
-<pre class="r"><code>c(head(alder_klasse_vec, n = 5), &quot;...&quot;, tail(alder_klasse_vec, n = 5))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIjAwMVwiICBcIjAwMlwiICBcIjAwM1wiICBcIjAwNFwiICBcIjAwNVwiICBcIi4uLlwiICBcIjEwMVwiICBcIjEwMlwiICBcIjEwM1wiICBcIjEwNFwiICBcIjEwNStcIlxuIn0= -->
-<pre><code> [1] &quot;001&quot;  &quot;002&quot;  &quot;003&quot;  &quot;004&quot;  &quot;005&quot;  &quot;...&quot;  &quot;101&quot;  &quot;102&quot;  &quot;103&quot;  &quot;104&quot;  &quot;105+&quot;</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="kvinner" class="section level4">
-<h4>Kvinner</h4>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNw6Ugc3BsaXR0ZSBww6Uga2rDuG5uIHBnYSBtYWtzIGdyZW5zZSBww6UgODAwMDAwIHJla2tlclxuYmVmX0sgPC0gQXBpRGF0YShcbiAgICAwNzQ1OSxcbiAgICBSZWdpb24gPSBrb21fdmVjLFxuICAgIFRpZCA9IGFzLmNoYXJhY3RlcigxOTk5OjIwMTQpLFxuICAgIEFsZGVyID0gYWxkZXJfa2xhc3NlX3ZlYyxcbiAgICBLam9ubiA9IFwiS3Zpbm5lclwiXG4pXG5cbmRmX2JlZl9LIDwtIGRhdGEuZnJhbWUoXG4gICAga25yID0gYmVmX0tbWzJdXSRSZWdpb24sXG4gICAga25hdm4gPSBiZWZfS1tbMV1dJHJlZ2lvbixcbiAgICB0aWQgPSBiZWZfS1tbMl1dJFRpZCxcbiAgICAjIFZpbCBoYSBLdmlubmVyLCBNZW5uIGlra2UgMiwgMSBpIGJlZl9LW1syXV0kS2pvbm5cbiAgICBram9ubiA9IGJlZl9LW1sxXV0ka2rDuG5uLFxuICAgICMgdmVsZ2VyIGFsZGVyIHNvbSAwMDAgMDAxIGV0Y1xuICAgIGFsZGVyID0gYmVmX0tbWzJdXSRBbGRlcixcbiAgICBiZWYgPSBiZWZfS1tbMl1dJHZhbHVlXG4pXG5gYGAifQ== -->
-<pre class="r"><code># Må splitte på kjønn pga maks grense på 800000 rekker
-bef_K &lt;- ApiData(
-    07459,
-    Region = kom_vec,
-    Tid = as.character(1999:2014),
-    Alder = alder_klasse_vec,
-    Kjonn = &quot;Kvinner&quot;
-)
-
-df_bef_K &lt;- data.frame(
-    knr = bef_K[[2]]$Region,
-    knavn = bef_K[[1]]$region,
-    tid = bef_K[[2]]$Tid,
-    # Vil ha Kvinner, Menn ikke 2, 1 i bef_K[[2]]$Kjonn
-    kjonn = bef_K[[1]]$kjønn,
-    # velger alder som 000 001 etc
-    alder = bef_K[[2]]$Alder,
-    bef = bef_K[[2]]$value
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbmNvbHMoXG4gIGtuciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAga25hdm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIGtqb25uID0gY29sX2NoYXJhY3RlcigpLFxuICB0aWQgPSBjb2xfY2hhcmFjdGVyKCksXG4gIGFscF9rID0gY29sX2RvdWJsZSgpXG4pXG4ifQ== -->
+<pre><code>
+-- Column specification ------------------------------
+cols(
+  knr = col_character(),
+  knavn = col_character(),
+  kjonn = col_character(),
+  tid = col_character(),
+  alp_k = col_double()
 )</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2JlZl9LKVxuYGBgIn0= -->
-<pre class="r"><code>dim(df_bef_K)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDcwMjI0MCAgICAgIDZcbiJ9 -->
-<pre><code>[1] 702240      6</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="menn" class="section level4">
-<h4>Menn</h4>
-<p>Hent ned tilsvarende befolkningsdata for menn.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmVmX00gPC0gQXBpRGF0YShcbiAgICAwNzQ1OSxcbiAgICBSZWdpb24gPSBrb21fdmVjLFxuICAgIFRpZCA9IGFzLmNoYXJhY3RlcigxOTk5OjIwMTQpLFxuICAgIEFsZGVyID0gYWxkZXJfa2xhc3NlX3ZlYyxcbiAgICBLam9ubiA9IFwiTWVublwiKVxuXG5kZl9iZWZfTSA8LSBkYXRhLmZyYW1lKFxuICAgIGtuciA9IGJlZl9NW1syXV0kUmVnaW9uLFxuICAgIGtuYXZuID0gYmVmX01bWzFdXSRyZWdpb24sXG4gICAgdGlkID0gYmVmX01bWzJdXSRUaWQsXG4gICAgIyBWaWwgaGEgS3Zpbm5lciwgTWVubiBpa2tlIDIsIDEgaSBiZWZfS1tbMl1dJEtqb25uXG4gICAga2pvbm4gPSBiZWZfTVtbMV1dJGtqw7hubixcbiAgICAjIHZlbGdlciBhbGRlciBzb20gMDAwIDAwMSBldGNcbiAgICBhbGRlciA9IGJlZl9NW1syXV0kQWxkZXIsXG4gICAgYmVmID0gYmVmX01bWzJdXSR2YWx1ZVxuKVxuYGBgIn0= -->
-<pre class="r"><code>bef_M &lt;- ApiData(
-    07459,
-    Region = kom_vec,
-    Tid = as.character(1999:2014),
-    Alder = alder_klasse_vec,
-    Kjonn = &quot;Menn&quot;)
-
-df_bef_M &lt;- data.frame(
-    knr = bef_M[[2]]$Region,
-    knavn = bef_M[[1]]$region,
-    tid = bef_M[[2]]$Tid,
-    # Vil ha Kvinner, Menn ikke 2, 1 i bef_K[[2]]$Kjonn
-    kjonn = bef_M[[1]]$kjønn,
-    # velger alder som 000 001 etc
-    alder = bef_M[[2]]$Alder,
-    bef = bef_M[[2]]$value
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYXJibCA8LSByZWFkX2NzdihmaWxlID0gXCJzc2JfZGZfYXJibC5jc3ZcIilcbmBgYCJ9 -->
+<pre class="r"><code>df_arbl &lt;- read_csv(file = &quot;ssb_df_arbl.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbmNvbHMoXG4gIGtuciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAga25hdm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIHRpZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAga2pvbm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIGFsID0gY29sX2RvdWJsZSgpXG4pXG4ifQ== -->
+<pre><code>
+-- Column specification ------------------------------
+cols(
+  knr = col_character(),
+  knavn = col_character(),
+  tid = col_character(),
+  kjonn = col_character(),
+  al = col_double()
 )</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYmVmX0sgPC0gcmVhZF9jc3YoZmlsZSA9IFwic3NiX2RmX2JlZl9LLmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>df_bef_K &lt;- read_csv(file = &quot;ssb_df_bef_K.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2JlZl9NKVxuYGBgIn0= -->
-<pre class="r"><code>dim(df_bef_M)</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbmNvbHMoXG4gIGtuciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAga25hdm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIHRpZCA9IGNvbF9kb3VibGUoKSxcbiAga2pvbm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIGFsZGVyID0gY29sX2NoYXJhY3RlcigpLFxuICBiZWYgPSBjb2xfZG91YmxlKClcbilcbiJ9 -->
+<pre><code>
+-- Column specification ------------------------------
+cols(
+  knr = col_character(),
+  knavn = col_character(),
+  tid = col_double(),
+  kjonn = col_character(),
+  alder = col_character(),
+  bef = col_double()
+)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYmVmX00gPC0gcmVhZF9jc3YoZmlsZSA9IFwic3NiX2RmX2JlZl9NLmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>df_bef_M &lt;- read_csv(file = &quot;ssb_df_bef_M.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDcwMjI0MCAgICAgIDZcbiJ9 -->
-<pre><code>[1] 702240      6</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbmNvbHMoXG4gIGtuciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAga25hdm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIHRpZCA9IGNvbF9kb3VibGUoKSxcbiAga2pvbm4gPSBjb2xfY2hhcmFjdGVyKCksXG4gIGFsZGVyID0gY29sX2NoYXJhY3RlcigpLFxuICBiZWYgPSBjb2xfZG91YmxlKClcbilcbiJ9 -->
+<pre><code>
+-- Column specification ------------------------------
+cols(
+  knr = col_character(),
+  knavn = col_character(),
+  tid = col_double(),
+  kjonn = col_character(),
+  alder = col_character(),
+  bef = col_double()
+)</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-</div>
-<div id="write-out-the-dataframes" class="section level3">
-<h3>Write out the dataframes</h3>
-<p>For kontroll.</p>
+<div id="problem-med-na" class="section level2">
+<h2>Problem med NA</h2>
+<p>Vi har et problem med NA for små kommuner i <code>df_arbl</code> . Årsaken er såkalt «prikking» utfra personvernhensyn. Er det færre enn 3 (dvs. 0, 1, 2) personer i en kategori så mener SSB at det blir mulig å identifisere enkeltpersoner. Derfor «prikker» de, dvs. lager NA, verdier for observasjonene. Vi lar dette ligge nå, men et problem som det er greit å være oppmerksom på. Dere kommer ganske sikkert til å støte på det senere i studiet.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYXJibF9wX2FsZGVyKVxuYGBgIn0= -->
-<pre class="r"><code>names(df_arbl_p_alder)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJhbGRlclwiIFwidGlkXCIgICBcImFscFwiICBcbiJ9 -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;alder&quot; &quot;tid&quot;   &quot;alp&quot;  </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYXJibF9wX2tqb25uKVxuYGBgIn0= -->
-<pre class="r"><code>names(df_arbl_p_kjonn)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJram9ublwiIFwidGlkXCIgICBcImFscF9rXCJcbiJ9 -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;kjonn&quot; &quot;tid&quot;   &quot;alp_k&quot;</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYXJibClcbmBgYCJ9 -->
-<pre class="r"><code>names(df_arbl)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJ0aWRcIiAgIFwia2pvbm5cIiBcImFsXCIgICBcbiJ9 -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;tid&quot;   &quot;kjonn&quot; &quot;al&quot;   </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYmVmX0spXG5gYGAifQ== -->
-<pre class="r"><code>names(df_bef_K)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJ0aWRcIiAgIFwia2pvbm5cIiBcImFsZGVyXCIgXCJiZWZcIiAgXG4ifQ== -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;tid&quot;   &quot;kjonn&quot; &quot;alder&quot; &quot;bef&quot;  </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfYmVmX00pXG5gYGAifQ== -->
-<pre class="r"><code>names(df_bef_M)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwia25yXCIgICBcImtuYXZuXCIgXCJ0aWRcIiAgIFwia2pvbm5cIiBcImFsZGVyXCIgXCJiZWZcIiAgXG4ifQ== -->
-<pre><code>[1] &quot;knr&quot;   &quot;knavn&quot; &quot;tid&quot;   &quot;kjonn&quot; &quot;alder&quot; &quot;bef&quot;  </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2FyYmxfcF9hbGRlcilcbmBgYCJ9 -->
-<pre class="r"><code>dim(df_arbl_p_alder)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDIzMTk5MCAgICAgIDVcbiJ9 -->
-<pre><code>[1] 231990      5</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2FyYmxfcF9ram9ubilcbmBgYCJ9 -->
-<pre class="r"><code>dim(df_arbl_p_kjonn)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE1NDY2MCAgICAgIDVcbiJ9 -->
-<pre><code>[1] 154660      5</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2FyYmwpXG5gYGAifQ== -->
-<pre class="r"><code>dim(df_arbl)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE1NDY2MCAgICAgIDVcbiJ9 -->
-<pre><code>[1] 154660      5</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2JlZl9LKVxuYGBgIn0= -->
-<pre class="r"><code>dim(df_bef_K)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDcwMjI0MCAgICAgIDZcbiJ9 -->
-<pre><code>[1] 702240      6</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2JlZl9NKVxuYGBgIn0= -->
-<pre class="r"><code>dim(df_bef_M)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDcwMjI0MCAgICAgIDZcbiJ9 -->
-<pre><code>[1] 702240      6</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfY3N2KGRmX2FyYmxfcF9hbGRlciwgZmlsZSA9IFwiLi9zc2JfZGZfYXJibF9wX2FsZGVyLmNzdlwiKVxud3JpdGVfY3N2KGRmX2FyYmxfcF9ram9ubiwgZmlsZSA9IFwiLi9zc2JfZGZfYXJibF9wX2tqb25uLmNzdlwiKVxud3JpdGVfY3N2KGRmX2FyYmwsIGZpbGUgPSBcIi4vc3NiX2RmX2FyYmwuY3N2XCIpXG53cml0ZV9jc3YoZGZfYmVmX0ssIGZpbGUgPSBcIi4vc3NiX2RmX2JlZl9LLmNzdlwiKVxud3JpdGVfY3N2KGRmX2JlZl9NLCBmaWxlID0gXCIuL3NzYl9kZl9iZWZfTS5jc3ZcIilcbmBgYCJ9 -->
-<pre class="r"><code>write_csv(df_arbl_p_alder, file = &quot;./ssb_df_arbl_p_alder.csv&quot;)
-write_csv(df_arbl_p_kjonn, file = &quot;./ssb_df_arbl_p_kjonn.csv&quot;)
-write_csv(df_arbl, file = &quot;./ssb_df_arbl.csv&quot;)
-write_csv(df_bef_K, file = &quot;./ssb_df_bef_K.csv&quot;)
-write_csv(df_bef_M, file = &quot;./ssb_df_bef_M.csv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI1V0c2lyYVxuVmlldyhkZl9hcmJsW2RmX2FyYmwka25yID09IFwiMTE1MVwiLF0pXG5WaWV3KGRmX2FyYmxfcF9hbGRlcltkZl9hcmJsX3BfYWxkZXIka25yID09IFwiMTE1MVwiLF0pXG5gYGAifQ== -->
+<pre class="r"><code>#Utsira
+View(df_arbl[df_arbl$knr == &quot;1151&quot;,])
+View(df_arbl_p_alder[df_arbl_p_alder$knr == &quot;1151&quot;,])</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 </div>
-<div id="opprydding" class="section level2">
-<h2>Opprydding</h2>
-<p>Vi har lagret det vi har hentet og kan nå rydde opp.</p>
+<div id="gjøre-arbeidsløshet-tidy" class="section level1">
+<h1>Gjøre arbeidsløshet «tidy»</h1>
+<div id="gjøre-arbeidsløse-i-aldersgrupper-tidy-df_arbl_p_alder" class="section level2">
+<h2>Gjøre arbeidsløse i % aldersgrupper tidy; (<code>df_arbl_p_alder</code>)</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGamVybiAjIGZyYSBuZXN0ZSBodmlzIGVuIHZpbCBzbGV0dGUgYWxsZSBvYmplY3Rlclxucm0obGlzdCA9IGxzKCkpXG5gYGAifQ== -->
-<pre class="r"><code># Fjern # fra neste hvis en vil slette alle objecter
-rm(list = ls())</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChkZl9hcmJsX3BfYWxkZXIsIG4gPSAyKVxuYGBgIn0= -->
+<pre class="r"><code>head(df_arbl_p_alder, n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MiwibmNvbCI6NSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyIyIHggNSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJuVlJTMDdETUJBMStiUktwS0pLWEtCTFdDU0tBd1ZsaHdRTE5raUlWYmNtTVJERk9KSGpBc3RlaHBOd3I2YmpORk0xRmxoeVBQUGVmTjVrbnU5WGwrRXFKSVM0eElQcittQ1N5ZDBUVFpjcElaNEQzZ2t3Z1htL0llb01EQk16aCtzTWhKZlFoSTdzTVgvNndFVEI1ZUk4U2hPYVhmeURZZzdaR0RhZ3kram1hdkg3by80QVJ0V25OTXV5eDRPQXdVMU5CeE4xYTJMaDRHc041VXYyd2R1aHBEK0FiaVVWOHBWa254SWRveGdaVjVjRm1rdzBWdDFBMVY4eDFwNFpJUnY0ZEYyM3RRWGtnclVvQU1Hd1lKckZyd3J5d2JOVHBuV2p5MXBDa25POGpzT2VsQVhNMTlJb0thTDhmUzJyS0wwMkhYcCtmMmFEN1J6Wi9yNm4wMW0vWnNMbFd5azVpaGZzaFF0Y0tJemNUeHczcXBRYVJ3RzBqWFd0R2NhRmVTMFE2WWNqMngwOWJNZlRod0lBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["knr"],"name":[1],"type":["chr"],"align":["left"]},{"label":["knavn"],"name":[2],"type":["chr"],"align":["left"]},{"label":["alder"],"name":[3],"type":["chr"],"align":["left"]},{"label":["tid"],"name":[4],"type":["chr"],"align":["left"]},{"label":["alp"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"0101","2":"Halden (-2019)","3":"15-74 år","4":"1999M01","5":"4"},{"1":"0101","2":"Halden (-2019)","3":"15-74 år","4":"1999M02","5":"4"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="endre-kategorier-i-variabelen-alder" class="section level3">
+<h3>Endre kategorier i variabelen alder</h3>
+<p>Å ha kategoriene “15-74 år” etc. er å be om problemer senere. Vi endrer til “15_74” etc..</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYXJibF9wX2FsZGVyIDwtIGRmX2FyYmxfcF9hbGRlciAlPiUgXG4gICAgbXV0YXRlKFxuICAgICAgICBhbGRlciA9IGNhc2Vfd2hlbihcbiAgICAgICAgICAgIGFsZGVyID09IFwiMTUtNzQgw6VyXCIgfiBcIjE1Xzc0XCIsXG4gICAgICAgICAgICBhbGRlciA9PSBcIjE1LTI5IMOlclwiIH4gXCIxNV8yOVwiLFxuICAgICAgICAgICAgYWxkZXIgPT0gXCIzMC03NCDDpXJcIiB+IFwiMzBfNzRcIlxuICAgICAgICApXG4gICAgKVxuYGBgIn0= -->
+<pre class="r"><code>df_arbl_p_alder &lt;- df_arbl_p_alder %&gt;% 
+    mutate(
+        alder = case_when(
+            alder == &quot;15-74 år&quot; ~ &quot;15_74&quot;,
+            alder == &quot;15-29 år&quot; ~ &quot;15_29&quot;,
+            alder == &quot;30-74 år&quot; ~ &quot;30_74&quot;
+        )
+    )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="bruk-separate-for-splitte-tid-til-aar-og-mnd" class="section level3">
+<h3>Bruk separate for splitte tid til aar og mnd</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2VuZHJlciBvZ3PDpSBuYXZuIGZyYSBkZl9hcmJsX3BfYWxkZXIgdGlsIGFyYmxvc19hbGRlcnNncnBcbmFyYmxvc19hbGRlcnNncnAgPC0gc2VwYXJhdGUoZGZfYXJibF9wX2FsZGVyLCBcInRpZFwiLCBjKFwiYWFyXCIsIFwibW5kXCIpLCBzZXAgPSBcIk1cIilcbnJtKGRmX2FyYmxfcF9hbGRlcilcbmBgYCJ9 -->
+<pre class="r"><code>#endrer også navn fra df_arbl_p_alder til arblos_aldersgrp
+arblos_aldersgrp &lt;- separate(df_arbl_p_alder, &quot;tid&quot;, c(&quot;aar&quot;, &quot;mnd&quot;), sep = &quot;M&quot;)
+rm(df_arbl_p_alder)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="fikse-knavn" class="section level3">
+<h3>Fikse knavn</h3>
+<p>Vi skal fjerne (-2019) etc som skjemmer navnene. Her får vi bruk for «regular expressions» fra kapittel 14 <em>Strings</em>. Jeg vil anbefale funksjonen <code>str_remove()</code>. Når det gjelder <code>pattern</code> så husk at det vi vil fjerne starter med <em>mellomrom</em>, før vi får en parentes, så kommer tall og en bindestrek (bruk character class) før det hele avsluttes med en parentes slutt. Husk at vi må benytte <code>\\</code> for «escape».</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3Igw6UgZmlubmUgcmlrdGlnIHBhdHRlcm4sIGZqZXJuIG7DpXIgZmVyZGlnXG4jIEZqZXJuIG7DpXIgZHUgaGFyIGZ1bm5ldCBldCBwZXR0ZXJuIHNvbSB2aXJrZXJcbnRlc3QgPC0gdGliYmxlKHRlc3RfbmF2biA9IGMoXCJIYWxkZW4gKC0yMDE5KVwiLCBcIk1vc3MgKC0yMDE5KVwiLCBcIlNhcnBzYm9yZyAoMTk5Mi0yMDE5KVwiLCBcIkZyZWRyaWtzdGFkICgxOTk0LTIwMTkpXCIsIFwiSHZhbGVyICgtMjAxOSlcIikpXG5zdHJfcmVtb3ZlKFxuICAgIHN0cmluZyA9IHRlc3QkdGVzdF9uYXZuLCBcbiAgICBwYXR0ZXJuID0gXCJIXCIpXG5gYGAifQ== -->
+<pre class="r"><code># For å finne riktig pattern, fjern når ferdig
+# Fjern når du har funnet et pettern som virker
+test &lt;- tibble(test_navn = c(&quot;Halden (-2019)&quot;, &quot;Moss (-2019)&quot;, &quot;Sarpsborg (1992-2019)&quot;, &quot;Fredrikstad (1994-2019)&quot;, &quot;Hvaler (-2019)&quot;))
+str_remove(
+    string = test$test_navn, 
+    pattern = &quot;H&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiYWxkZW4gKC0yMDE5KVwiICAgICAgICAgIFxuWzJdIFwiTW9zcyAoLTIwMTkpXCIgICAgICAgICAgIFxuWzNdIFwiU2FycHNib3JnICgxOTkyLTIwMTkpXCIgIFxuWzRdIFwiRnJlZHJpa3N0YWQgKDE5OTQtMjAxOSlcIlxuWzVdIFwidmFsZXIgKC0yMDE5KVwiICAgICAgICAgIFxuIn0= -->
+<pre><code>[1] &quot;alden (-2019)&quot;          
+[2] &quot;Moss (-2019)&quot;           
+[3] &quot;Sarpsborg (1992-2019)&quot;  
+[4] &quot;Fredrikstad (1994-2019)&quot;
+[5] &quot;valer (-2019)&quot;          </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGamVybiAoLTIwMTkpIGV0Y1xuYXJibG9zX2FsZGVyc2dycCRrbmF2biA8LSBzdHJfcmVtb3ZlKFxuICBzdHJpbmcgPSBhcmJsb3NfYWxkZXJzZ3JwJGtuYXZuLFxuICBwYXR0ZXJuID0gZml4ZWQoXCIgKC0yMDE5KVwiKSlcbmFyYmxvc19hbGRlcnNncnAka25hdm4gPC0gc3RyX3JlbW92ZShcbiAgc3RyaW5nID0gYXJibG9zX2FsZGVyc2dycCRrbmF2bixcbiAgcGF0dGVybiA9IGZpeGVkKFwiICgxOTkyLTIwMTkpXCIpKVxuYXJibG9zX2FsZGVyc2dycCRrbmF2biA8LSBzdHJfcmVtb3ZlKFxuICBzdHJpbmcgPSBhcmJsb3NfYWxkZXJzZ3JwJGtuYXZuLFxuICBwYXR0ZXJuID0gZml4ZWQoXCIgKDE5OTQtMjAxOSlcIikpXG5gYGAifQ== -->
+<pre class="r"><code># Fjern (-2019) etc
+arblos_aldersgrp$knavn &lt;- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = fixed(&quot; (-2019)&quot;))
+arblos_aldersgrp$knavn &lt;- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = fixed(&quot; (1992-2019)&quot;))
+arblos_aldersgrp$knavn &lt;- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = fixed(&quot; (1994-2019)&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Slik skal de 10 første navnene nå se ut:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZCh1bmlxdWUoYXJibG9zX2FsZGVyc2dycCRrbmF2biksIG4gPSAxMClcbmBgYCJ9 -->
+<pre class="r"><code>head(unique(arblos_aldersgrp$knavn), n = 10)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIkhhbGRlblwiICAgICAgXCJNb3NzXCIgICAgICAgIFwiU2FycHNib3JnXCIgIFxuIFs0XSBcIkZyZWRyaWtzdGFkXCIgXCJIdmFsZXJcIiAgICAgIFwiQXJlbWFya1wiICAgIFxuIFs3XSBcIk1hcmtlclwiICAgICAgXCJSw7htc2tvZ1wiICAgICBcIlRyw7hnc3RhZFwiICAgXG5bMTBdIFwiU3B5ZGViZXJnXCIgIFxuIn0= -->
+<pre><code> [1] &quot;Halden&quot;      &quot;Moss&quot;        &quot;Sarpsborg&quot;  
+ [4] &quot;Fredrikstad&quot; &quot;Hvaler&quot;      &quot;Aremark&quot;    
+ [7] &quot;Marker&quot;      &quot;Rømskog&quot;     &quot;Trøgstad&quot;   
+[10] &quot;Spydeberg&quot;  </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pivot-for-å-gjøre-tidy" class="section level3">
+<h3>Pivot for å gjøre tidy</h3>
+<p>arblos_aldersgrp er ikke tidy. Hver observasjon er spredd over tre rekke, hhv. 15_29, 30_74 og 15_74. Pivot dataframen <code>arblos_aldersgrp</code> slik at vi får en observasjon per rekke. Bruk opsjonen <code>names_prefix</code> og sett denne lik “alp_” slik at de tre nye variabelnavnene starter med dette. Bruk samtidig mutate til å endre variablene <code>aar</code>og <code>mnd</code> til integer.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXJibG9zX2FsZGVyc2dycCA8LSBhcmJsb3NfYWxkZXJzZ3JwICU+JVxuICBwaXZvdF93aWRlcihcbiAgICBuYW1lc19mcm9tID0gYWxkZXIsXG4gICAgbmFtZXNfcHJlZml4ID0gYyhcImFscF8xNV83NFwiLCBcImFscF8xNV8yOVwiLCBcImFscF8zMF83NFwiKVxuICApXG5gYGAifQ== -->
+<pre class="r"><code>arblos_aldersgrp &lt;- arblos_aldersgrp %&gt;%
+  pivot_wider(
+    names_from = alder,
+    names_prefix = c(&quot;alp_15_74&quot;, &quot;alp_15_29&quot;, &quot;alp_30_74&quot;)
+  )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Slik skal <code>arblos_aldersgrp</code> nå se ut.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYXJibG9zX2FsZGVyc2dycCwgbiA9IDIpXG5gYGAifQ== -->
+<pre class="r"><code>print(arblos_aldersgrp, n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Da skal <code>arblos_aldersgrp</code> være «tidy».</p>
+</div>
+</div>
+<div id="gjøre-arbeidløse-prosent-fordelt-på-kjønn-tidy-df_arbl_p_kjonn" class="section level2">
+<h2>Gjøre arbeidløse (prosent) fordelt på kjønn tidy; (<code>df_arbl_p_kjonn</code>)</h2>
+<p><code>df_arbl_p_kjonn</code> er <em>ikke</em> tidy.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIHRpZCwga2pvbm4pLCBuID0gMilcbmBgYCJ9 -->
+<pre class="r"><code>print(arrange(df_arbl_p_kjonn, knr, knavn, tid, kjonn), n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Hva som må fikses i<code>df_arbl_p_kjonn</code>:</p>
+<ol style="list-style-type: decimal">
+<li>Fiks knavn vha. <code>str_remove()</code></li>
+<li>Splitte tid i <code>aar</code> og <code>mnd</code>, gjør til integer i samme slengen</li>
+<li>En observasjon per rekke, alp_Kvinner, alp_Menn som variabelnavn</li>
+</ol>
+<div id="fikser-knavn" class="section level3">
+<h3>Fikser knavn</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIHRpZCwga2pvbm4pLCBuID0gMilcbmBgYCJ9 -->
+<pre class="r"><code>print(arrange(df_arbl_p_kjonn, knr, knavn, tid, kjonn), n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="splitte-tid" class="section level3">
+<h3>Splitte tid</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIGFhciwgbW5kLCBram9ubiksIG4gPSAyKVxuYGBgIn0= -->
+<pre class="r"><code>print(arrange(df_arbl_p_kjonn, knr, knavn, aar, mnd, kjonn), n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="en-observasjon-per-rekke" class="section level3">
+<h3>En observasjon per rekke</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIGFhciwgbW5kKSwgbiA9IDIpXG5gYGAifQ== -->
+<pre class="r"><code>print(arrange(df_arbl_p_kjonn, knr, knavn, aar, mnd), n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Da er <code>df_arbl_p_kjonn</code> «tidy».</p>
+</div>
+</div>
+<div id="gjøre-antall-arbeidsløse-fordelt-på-kjønn-tidy-df_arbl" class="section level2">
+<h2>Gjøre antall arbeidsløse fordelt på kjønn tidy; (<code>df_arbl</code>)</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZGZfYXJibCwgbiA9IDIpXG5gYGAifQ== -->
+<pre class="r"><code>print(df_arbl, n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Hva som må fikses i <code>df_arbl</code>:</p>
+<ol style="list-style-type: decimal">
+<li>Fiks knavn vha. <code>str_remove()</code></li>
+<li>Splitte tid i <code>aar</code> og <code>mnd</code>, gjør til integer i samme slengen</li>
+<li>En observasjon per rekke, al_Kvinner, al_Menn som variabelnavn</li>
+</ol>
+<p>Gjør som ovenfor.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Har du gjort det riktig skal <code>df_arbl</code> nå se slik ut.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZGZfYXJibCwgbiA9IDIpXG5gYGAifQ== -->
+<pre class="r"><code>print(df_arbl, n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="samle-månedlige-arbeisløshets-data-i-en-tibble" class="section level2">
+<h2>Samle månedlige arbeisløshets-data i en tibble</h2>
+<p>Før vi slår i sammen de tre tibble-ene vi har gjort «tidy» er det lurt å sjekke en siste gang at de er på den formen vi ønsker.</p>
+<div id="slår-sammen-tre-tibble-til-en" class="section level3">
+<h3>Slår sammen tre tibble til en</h3>
+<p>Tenk nøye gjennom hvilke variabler man skal «joine» på.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYWw5OTE0bSwgbiA9IDIpXG5gYGAifQ== -->
+<pre class="r"><code>print(al9914m, n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoYWw5OTE0bSlcbmRpbShhbDk5MTRtKVxuYGBgIn0= -->
+<pre class="r"><code>names(al9914m)
+dim(al9914m)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="gjøre-befolkning-tidy" class="section level2">
+<h2>Gjøre befolkning «tidy»</h2>
+<p>Vi måtte dele befolkning i Menn og Kvinner da vi hentet dataene. Nå vil vi gjøre dem «tidy» og slå dem sammen.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGRmX2JlZl9NKVxuZGltKGRmX2JlZl9LKVxuYGBgIn0= -->
+<pre class="r"><code>dim(df_bef_M)
+dim(df_bef_K)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYXJyYW5nZShkZl9iZWZfTSwga25yLCBrbmF2biwgdGlkLCBhbGRlciksIG4gPSAyKVxuYGBgIn0= -->
+<pre class="r"><code>print(arrange(df_bef_M, knr, knavn, tid, alder), n = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Hver observasjon er spredt over 106 rekker!</p>
+<p>Vi vil bruke følgende strategi for å gjøre befolkning «tidy»:</p>
+<ol style="list-style-type: decimal">
+<li>Endre variabel-navn bef til hhv. df_bef_K og df_bef_M. Slette variabelen kjonn i både df_bef_M og df_bef_K.</li>
+<li>Først slå sammen Menn og Kvinner så vi slipper å gjøre alt to ganger.</li>
+<li>Fikse navn</li>
+<li>Skifte navn fra tid til aar</li>
+<li>Gjøre om alder fra chr til integer</li>
+<li>Lage årsklasser for befolkningen. Vi trenger ikke 106</li>
+<li>Gjøre pivot_ så vi blir «tidy»</li>
+</ol>
+<div id="endre-variabel-navn-fjerne-kjonn" class="section level3">
+<h3>Endre variabel navn, fjerne kjonn</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfYmVmX0sgPC0gZGZfYmVmX0sgJT4lIFxuICAgIHJlbmFtZShiZWZfSyA9IGJlZikgJT4lIFxuICAgIHNlbGVjdCgta2pvbm4pXG5kZl9iZWZfTSA8LSBkZl9iZWZfTSAlPiUgXG4gICAgcmVuYW1lKGJlZl9NID0gYmVmKSAlPiUgXG4gICAgc2VsZWN0KC1ram9ubilcbmBgYCJ9 -->
+<pre class="r"><code>df_bef_K &lt;- df_bef_K %&gt;% 
+    rename(bef_K = bef) %&gt;% 
+    select(-kjonn)
+df_bef_M &lt;- df_bef_M %&gt;% 
+    rename(bef_M = bef) %&gt;% 
+    select(-kjonn)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="slå-sammen-df_bef_k-og-df_bef_m" class="section level3">
+<h3>Slå sammen df_bef_K og df_bef_M</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGJlZjk5MTRNSylcbm5hbWVzKGJlZjk5MTRNSylcbmBgYCJ9 -->
+<pre class="r"><code>dim(bef9914MK)
+names(bef9914MK)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="fikser-knavn-1" class="section level3">
+<h3>Fikser knavn</h3>
+<p>Fiks kommunenavnene.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="skifte-navn-fra-tid-til-aar" class="section level3">
+<h3>Skifte navn fra tid til aar</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="gjøre-om-alder-fra-chr-til-integer" class="section level3">
+<h3>Gjøre om alder fra chr til integer</h3>
+<p>Bruk først <code>str_replace()</code> til å endre “105+” til “105”. Husk at “+” er et av tegnene som har spesiell betydning og må «escapes» med <code>\\</code>. Gjør så om fra chr til integer.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmVmOTkxNE1LIDwtIGJlZjk5MTRNSyAlPiVcbiAgICBtdXRhdGUoXG4gICAgICAgIGFsZGVyID0gc3RyX3JlcGxhY2UoYWxkZXIsIFwiMTA1XFxcXCtcIiwgXCIxMDVcIiksXG4gICAgICAgIGFsZGVyID0gYXMuaW50ZWdlcihhbGRlcilcbiAgICApXG5gYGAifQ== -->
+<pre class="r"><code>bef9914MK &lt;- bef9914MK %&gt;%
+    mutate(
+        alder = str_replace(alder, &quot;105\\+&quot;, &quot;105&quot;),
+        alder = as.integer(alder)
+    )</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="lage-årsklasser-for-befolkningen" class="section level3">
+<h3>Lage årsklasser for befolkningen</h3>
+<p>Vi vil benytte årsklassene “0_14”, “15_29”, “30_74” og “75_105” siden disse samsvarer med dem brukt for arbeidsløshet. Bruk <code>mutate()</code>, <code>case_when()</code> og <code>alder %in% c(0:14) ~ &quot;0_14&quot;</code> osv. for å definere årsklassene. Gi variabelen med årsklassene navnet <code>ald_int</code>. Bruk så <code>group_by()</code> på knr, knavn, aar og ald_int og summer opp vha. <code>sum()</code>. La siste linjen i <code>summarise()</code> være <code>bef_MK = bef_K + bef_M</code> så får vi også med oss total befolkning for de ulike årsklassene.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYmVmOTkxNE1LLCBtID0gMilcbmBgYCJ9 -->
+<pre class="r"><code>print(bef9914MK, m = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="gjør-pivot_-så-vi-blir-tidy." class="section level3">
+<h3>Gjør <code>pivot_</code> så vi blir «tidy».</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Gjør du ting rett skal <code>bef9914MK</code> nå se slik ut:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoYmVmOTkxNE1LLCBtID0gMilcbmBgYCJ9 -->
+<pre class="r"><code>print(bef9914MK, m = 2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>og ha dimensjonene:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKGJlZjk5MTRNSylcbmBgYCJ9 -->
+<pre class="r"><code>dim(bef9914MK)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="skrive-tidy-data-til-fil" class="section level2">
+<h2>Skrive «tidy» data til fil</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfY3N2KGFsOTkxNG0sIFwiYWw5OTE0bS5jc3ZcIilcbndyaXRlX2NzdihiZWY5OTE0TUssIFwiYmVmOTkxNE1LLmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>write_csv(al9914m, &quot;al9914m.csv&quot;)
+write_csv(bef9914MK, &quot;bef9914MK.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3JtKGxpc3QgPSBscygpKVxuYGBgIn0= -->
+<pre class="r"><code>#rm(list = ls())</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkFzc2lnbm1lbnQgNCINCm91dHB1dDoNCiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0DQogIGh0bWxfbm90ZWJvb2s6IGRlZmF1bHQNCi0tLQ0KDQpgYGB7ciBzZXR1cH0NCmxpYnJhcnkoUHhXZWJBcGlEYXRhKQ0KbGlicmFyeSh0aWR5dmVyc2UpDQprbml0cjo6b3B0c19jaHVuayRzZXQoZXZhbCA9IFRSVUUpDQpgYGANCg0KIyMgQXNzaWdubWVudCA0OyBzc2IgZGF0YQ0KDQojIyMgRGF0YSBoZW50ZXQNCg0KRGF0YSBzaXN0IGhlbnRldCAzMC4gbm92ZW1iZXIgMjAyMC4gRGV0dGUgZG9rdW1lbnRldCBza2FsIGJhcmUga2rDuHJlcyBodmlzIG55ZSBkYXRhIG3DpSBoZW50ZXMgaW5uLiBgZXZhbCA9IEZBTFNFYCBvdmVyIGkgc2V0dXAgY2h1bmsgbcOlIGVuZHJlcyB0aWwgYGV2YWwgPSBUUlVFYCwgc8OlIG3DpSBzZXR1cCBjaHVuay1lbiBrasO4cmVzIGbDuHIgZW4gdGlsIHNsdXR0IHZlbGdlciAgYFJlc3RhcnQgUiBhbmQgcnVuIGFsbCBjaHVua3NgIGZyYSBgUnVuYCBtZW55ZW4uDQoNCiMjIyBWZWt0b3JlbiBtZWQgZGUgNDE4IGtvbW11bmVuZSB2aSB2aWwgYnJ1a2UNCg0KSSBwZXJpb2RlbiAxOTk5IHQuby5tIDIwMTQgZXIgZGV0IHJlbGF0aXZ0IGbDpSBrb21tdW5lc2FtbWVuc2zDpWluZ2VyLiBEZSBzb20gZXIgaGFyIHZpIGVrc2tsdWRlcnQgZnJhIHbDpXJ0IHV0dmFsZy4gVmkgZW5kZXIgb3BwIG1lZCBlbiBsaXN0ZSBww6UgNDE4IGtvbW11bmVyLiBLb21tdW5lbnVtbWVyIGZvciBkaXNzZSBlciBsaXN0ZXQgdW5kZXIuDQoNCmBgYHtyfQ0Ka29tX3ZlYyA8LSBjKCIwMTAxIiwgICIwMTA0IiwgIjAxMDUiLCAiMDEwNiIsICIwMTExIiwgIjAxMTgiLCAiMDExOSIsICIwMTIxIiwgIjAxMjIiLCIwMTIzIiwgIjAxMjQiLCAiMDEyNSIsICIwMTI3IiwgIjAxMjgiLCAiMDEzNSIsICIwMTM2IiwgIjAxMzciLCAiMDEzOCIsICIwMjExIiwgIjAyMTMiLCAiMDIxNCIsICIwMjE1IiwgIjAyMTYiLCAiMDIxNyIsICIwMjE5IiwgIjAyMjAiLCAiMDIyMSIsICIwMjI2IiwgIjAyMjciLCAiMDIyOCIsICIwMjI5IiwgIjAyMzAiLCAiMDIzMSIsICIwMjMzIiwgIjAyMzQiLCAiMDIzNSIsICIwMjM2IiwgIjAyMzciLCAiMDIzOCIsICIwMjM5IiwgIjA2MDIiLCAiMDYwNCIsICIwNjA1IiwgIjA2MTIiLCAiMDYxNSIsICIwNjE2IiwgIjA2MTciLCAiMDYxOCIsICIwNjE5IiwgIjA2MjAiLCAiMDYyMSIsICIwNjIyIiwgIjA2MjMiLCAiMDYyNCIsICIwNjI1IiwgIjA2MjYiLCAiMDYyNyIsICIwNjI4IiwgIjA2MzEiLCAiMDYzMiIsICIwNjMzIiwgIjAzMDEiLCAiMDQwMiIsICIwNDAzIiwgIjA0MTIiLCAiMDQxNSIsICIwNDE3IiwgIjA0MTgiLCAiMDQxOSIsICIwNDIwIiwgIjA0MjMiLCAiMDQyNSIsICIwNDI2IiwgIjA0MjciLCAiMDQyOCIsICIwNDI5IiwgIjA0MzAiLCAiMDQzMiIsICIwNDM0IiwgIjA0MzYiLCAiMDQzNyIsICIwNDM4IiwgIjA0MzkiLCAiMDQ0MSIsICIwNTAxIiwgIjA1MDIiLCAiMDUxMSIsICIwNTEyIiwgIjA1MTMiLCAiMDUxNCIsICIwNTE1IiwgIjA1MTciLCAgIjA1MTkiLCAiMDUyMCIsICIwNTIxIiwgIjA1MjIiLCAiMDUyOCIsICIwNTI5IiwgIjA1MzIiLCAiMDUzMyIsICIwNTM0IiwgIjA1MzYiLCAiMDUzOCIsICIwNTQwIiwgIjA1NDEiLCAiMDU0MiIsICIwNTQzIiwgIjA1NDQiLCAiMDU0NSIsICIwNzAyIiwgIjA3MDYiLCAiMDcwOSIsICIwNzExIiwgIjA3MTMiLCAiMDcxNCIsICIwNzE5IiwgIjA3MjAiLCAiMDcyMiIsICIwNzIzIiwgIjA3MjgiLCAiMDgwNSIsICIwODA2IiwgIjA4MDciLCAiMDgxMSIsICIwODE0IiwgIjA4MTUiLCAiMDgxNyIsICIwODE5IiwgIjA4MjEiLCAiMDgyMiIsICIwODI2IiwgIjA4MjciLCAiMDgyOCIsICIwODI5IiwgIjA4MzAiLCAiMDgzMSIsICIwODMzIiwgIjA4MzQiLCAiMDkwMSIsICIwOTA0IiwgIjA5MDYiLCAiMDkxMSIsICIwOTEyIiwgIjA5MTQiLCAiMDkxOSIsICIwOTI2IiwgIjA5MjgiLCAiMDkyOSIsICIwOTM1IiwgIjA5MzciLCAiMDkzOCIsICIwOTQwIiwgIjA5NDEiLCAiMTAwMSIsICIxMDAyIiwgIjEwMDMiLCAiMTAwNCIsICIxMDE0IiwgIjEwMTciLCAiMTAxOCIsICIxMDIxIiwgIjEwMjYiLCAiMTAyNyIsICIxMDI5IiwgIjEwMzIiLCAiMTAzNCIsICIxMDM3IiwgIjEwNDYiLCAiMTEwMSIsICIxMTAyIiwgIjExMDMiLCAiMTEwNiIsICIxMTExIiwgIjExMTIiLCAiMTExNCIsICIxMTE5IiwgIjExMjAiLCAiMTEyMSIsICIxMTIyIiwgIjExMjQiLCAiMTEyNyIsICIxMTI5IiwgIjExMzAiLCAiMTEzMyIsICIxMTM0IiwgIjExMzUiLCAiMTE0MSIsICIxMTQyIiwgIjExNDQiLCAiMTE0NSIsICIxMTQ2IiwgIjExNDkiLCAiMTE1MSIsICIxMjAxIiwgIjEyMTEiLCAiMTIxNiIsICIxMjE5IiwgIjEyMjEiLCAiMTIyMiIsICIxMjIzIiwgIjEyMjQiLCAiMTIyNyIsICIxMjI4IiwgIjEyMzEiLCAiMTIzMiIsICIxMjMzIiwgIjEyMzQiLCAiMTIzNSIsICIxMjM4IiwgIjEyNDEiLCAiMTI0MiIsICIxMjQzIiwgIjEyNDQiLCAiMTI0NSIsICIxMjQ2IiwgIjEyNDciLCAiMTI1MSIsICIxMjUyIiwgIjEyNTMiLCAiMTI1NiIsICIxMjU5IiwgIjEyNjAiLCAiMTI2MyIsICIxMjY0IiwgIjEyNjUiLCAiMTI2NiIsICIxNDAxIiwgIjE0MTEiLCAiMTQxMiIsICIxNDEzIiwgIjE0MTYiLCAiMTQxNyIsICIxNDE4IiwgIjE0MTkiLCAiMTQyMCIsICIxNDIxIiwgIjE0MjIiLCAiMTQyNCIsICIxNDI2IiwgIjE0MjgiLCAiMTQyOSIsICIxNDMwIiwgIjE0MzEiLCAiMTQzMiIsICIxNDMzIiwgIjE0MzgiLCAiMTQzOSIsICIxNDQxIiwgIjE0NDMiLCAiMTQ0NCIsICIxNDQ1IiwgIjE0NDkiLCAiMTUwMiIsICIxNTA0IiwgICIxNTExIiwgIjE1MTQiLCAiMTUxNSIsICIxNTE2IiwgIjE1MTciLCAiMTUxOSIsICIxNTIwIiwgIjE1MjMiLCAiMTUyNCIsICIxNTI1IiwgIjE1MjYiLCAiMTUyOCIsICIxNTI5IiwgIjE1MzEiLCAiMTUzMiIsICIxNTM0IiwgIjE1MzUiLCAiMTUzOSIsICIxNTQzIiwgIjE1NDUiLCAiMTU0NiIsICIxNTQ3IiwgIjE1NDgiLCAiMTU1MSIsICIxNTU0IiwgIjE1NTciLCAiMTU2MCIsICIxNTYzIiwgIjE1NjYiLCAiMTU2NyIsICIxNTcxIiwgIjE1NzMiLCAiMTYwMSIsICIxNjEyIiwgIjE2MTMiLCAiMTYxNyIsICIxNjIwIiwgIjE2MjEiLCAiMTYyMiIsICIxNjI0IiwgIjE2MjciLCAiMTYzMCIsICIxNjMyIiwgIjE2MzMiLCAiMTYzNCIsICIxNjM1IiwgIjE2MzYiLCAiMTYzOCIsICIxNjQwIiwgIjE2NDQiLCAiMTY0OCIsICIxNjUzIiwgIjE2NTciLCAiMTY2MiIsICIxNjYzIiwgIjE2NjQiLCAiMTY2NSIsICIxNzAyIiwgIjE3MDMiLCAiMTcxMSIsICIxNzE0IiwgIjE3MTciLCAiMTcxOCIsICIxNzE5IiwgIjE3MjEiLCAiMTcyNCIsICIxNzI1IiwgIjE3MzYiLCAiMTczOCIsICIxNzM5IiwgIjE3NDAiLCAiMTc0MiIsICIxNzQzIiwgIjE3NDQiLCAiMTc0OCIsICIxNzQ5IiwgIjE3NTAiLCAiMTc1MSIsICIxNzU1IiwgIjE4MDQiLCAiMTgwNSIsICIxODExIiwgIjE4MTIiLCAiMTgxNSIsICIxODE2IiwgIjE4MTgiLCAiMTgyMCIsICIxODIyIiwgIjE4MjQiLCAiMTgyNSIsICIxODI2IiwgIjE4MjciLCAiMTgyOCIsICIxODMyIiwgIjE4MzMiLCAiMTgzNCIsICIxODM1IiwgIjE4MzYiLCAiMTgzNyIsICIxODM4IiwgIjE4MzkiLCAiMTg0MCIsICIxODQxIiwgIjE4NDUiLCAiMTg0OCIsICIxODQ5IiwgIjE4NTAiLCAiMTg1MSIsICIxODUyIiwgIjE4NTMiLCAiMTg1NCIsICIxODU2IiwgIjE4NTciLCAiMTg1OSIsICIxODYwIiwgIjE4NjUiLCAiMTg2NiIsICIxODY3IiwgIjE4NjgiLCAiMTg3MCIsICIxODcxIiwgIjE4NzQiLCAiMTkwMiIsICIxOTExIiwgIjE5MTMiLCAiMTkxNyIsICIxOTE5IiwgIjE5MjAiLCAiMTkyMiIsICIxOTIzIiwgIjE5MjQiLCAiMTkyNSIsICIxOTI2IiwgIjE5MjciLCAiMTkyOCIsICIxOTI5IiwgIjE5MzEiLCAiMTkzMyIsICIxOTM2IiwgIjE5MzgiLCAiMTkzOSIsICIxOTQwIiwgIjE5NDEiLCAiMTk0MiIsICIxOTQzIiwgIjIwMDIiLCAiMjAwMyIsICIyMDA0IiwgIjIwMTEiLCAiMjAxMiIsICIyMDE0IiwgIjIwMTUiLCAiMjAxNyIsICIyMDE4IiwgIjIwMTkiLCAiMjAyMCIsICIyMDIxIiwgIjIwMjIiLCAiMjAyMyIsICIyMDI0IiwgIjIwMjUiLCAiMjAyNyIsICIyMDI4IiwgIjIwMzAiKQ0KYGBgDQoNCmBgYHtyfQ0KbGVuZ3RoKGtvbV92ZWMpDQpgYGANCg0KIyMjIDE5OTkgdC5vLm0uIDIwMTQgbcOlbmVkc2Jhc2lzDQoNClZpIGJydWtlciBwZXJpb2RlbiBqYW51YXIgMTk5OSB0Lm8ubS4gbWFpIDIwMTQuIFBlcmlvZGVuIGhhciByZWxhdGl2dCBmw6Uga29tbXVuZWp1c3RlcmluZ2VyIG9nIGdvZCB0aWxnYW5nIHDDpSBkYXRhLiBMYWcgZW4gdmVrdG9yIGB0aWRfdmVjYCBww6UgZm9ybWVuICIxOTk5TTAxIiwgIjE5OTlNMDIiLCAiMTk5OU0wMyIsIC4uLiAiMjAxNE0wNCIsICIyMDE0TTA1LiBCcnVrIGMoKSwgcGFzdGUoKSwgcmVwKCkgb2cgc3RyX3BhZCgpLiBIdXNrIGF0IHJlcCgpIGhhciBldCBlYWNoIGFyZ3VtZW50LiBFdCB0aXBzIGVyIMOlIGxhZ2Ugb3BwIHRpbCAyMDE0TTEyIG9nIHPDpSBmamVybmUgZGUgc2lzdGUgNyBlbGVtZW50ZW5lLg0KDQpgYGB7cn0NCiMgY29tYmluZSBtZWQgYygpLCByZXAoKSBzZSBhcmd1bWVudCBlYWNoLCBzdHJfcGFkKCkNCiMgdGlsIMOlIGxhZ2UgMDEsIDAyLi4uMTEsIDEyDQp0aWRfdmVjIDwtIHBhc3RlKHJlcCgxOTk5OjIwMTQsIGVhY2ggPSAxMiksICJNIiwgc3RyX3BhZCgxOjEyLCB3aWR0aCA9IDIsIHBhZCA9ICIwIiksIHNlcCA9ICIiKQ0KdGlkX3ZlYyA8LSB0aWRfdmVjWzE6MTg1XQ0KYGBgDQoNCg0KYGBge3J9DQpsZW5ndGgodGlkX3ZlYykNCmBgYA0KDQoNCmBgYHtyfQ0KYyhoZWFkKHRpZF92ZWMsIG4gPSAxNCksICIuLi4iLCB0YWlsKHRpZF92ZWMsIG4gPSAxNCkpDQpgYGANCg0KIyMjIEtqw7hubiBvZyBhbGRlcnNncnVwcGUNCg0KVmkgdHJlbmdlciBvZ3PDpSBkaXNzZSBzb20gamVnIGhhciBkZWZpbmVydCBmb3IgZGVyZS4NCg0KYGBge3J9DQphbGRlcl92ZWMgPC0gYygiMTUtNzQiLCAiMTUtMjkiLCAiMzAtNzQiKQ0Ka2pvbm5fdmVjIDwtIGMoIk1lbm4iLCAiS3Zpbm5lciIpDQpgYGANCg0KIyMjIFRhYmVsbCAxMDU0MCwgYXJiZWlkc2zDuHNlIGkgJSwgcGVyIGtvbW11bmUsIGZvcmRlbHQgcMOlIGFsZGVyc2thdGVnb3JpZXIsIG3DpW5lZGxpZyAxOTkxTTAxLTIwMTRNMDUNCg0KQXJiZWlkc2zDuHNoZXQgaSAlIGZvciBhbGRlcnNrYXRlZ29yaWVuZSAiMTUtNzQgw6VyIiAiMTUtMjkgw6VyIiBvZyAiMzAtNzQgw6VyIi4NCg0KVGFiZWxsZW4gZXIgcMOlIGA0MTgqMTg1KjM9MjMxOTkwYCByZWtrZXIgc29tIGVyIHVuZGVyIGdyZW5zZW4gcMOlIDgwMDAwMCByZWtrZXIuIEthbiBkZXJmb3IgaGVudGUgYWx0IHDDpSBlbiBnYW5nLg0KDQpgQXBpRGF0YSgpYCByZXR1cm5lcmVyIGVuIGxpc3RlIG1lZCB0byBlbGVtZW50ZXIsIGhodi4gZGV0IHNvbSBrYWxsZXMgdmFyaWFiZWwtYmVza3JpdmVsc2Ugb2cgdmVyZGllci4gRm9yIG9zcyBlciBkZXQgZ3JlaXQgw6UgaGVudGUgYHJlZ2lvbmAgc29tIGVyIGtvbW11bmVuYXZuLCBhbGRlciBvZyBrasO4bm4gKCJLdmlubmVyIiwgIk1lbm4iKSBmcmEgZGVuIGbDuHJzdGUgb2cgcmVzdGVuIGZyYSBkZW4gYW5kcmUgbGlzdGVuLiBIdXNrIGF0IGR1IGthbiBoZW50ZSBpbm5ob2xkZXQgaSBkZSB0byAoZGF0YWZyYW1lKSBmcmVtIG1lZCBoaHYuIGBbWzFdXWAgb2cgYFtbMl1dYC4NCg0KYGBge3J9DQphcmJsX3BfYWxkZXIgPC0gQXBpRGF0YSgNCiAgICAxMDU0MCwNCiAgICBSZWdpb24gPSBrb21fdmVjLA0KICAgIFRpZCA9IHRpZF92ZWMsDQogICAgQWxkZXIgPSBhbGRlcl92ZWMNCiAgKQ0KDQpkZl9hcmJsX3BfYWxkZXIgPC0gZGF0YS5mcmFtZSgNCiAgICBrbnIgPSBhcmJsX3BfYWxkZXJbWzJdXSRSZWdpb24sDQogICAga25hdm4gPSBhcmJsX3BfYWxkZXJbWzFdXSRyZWdpb24sDQogICAgYWxkZXIgPSBhcmJsX3BfYWxkZXJbWzFdXSRhbGRlciwNCiAgICB0aWQgPSBhcmJsX3BfYWxkZXJbWzJdXSRUaWQsDQogICAgIyBhcmJlaWRzbMO4c2UgaSBwcm9zZW50DQogICAgYWxwID0gYXJibF9wX2FsZGVyW1syXV0kdmFsdWUNCikNCmRpbShkZl9hcmJsX3BfYWxkZXIpDQpgYGANCg0KIyMjIFRhYmVsbCAwNDQ3MSwgYXJiZWlkc2zDuHNlIGkgJSwgcGVyIGtvbW11bmUsIGV0dGVyIGtqw7hubiwgbcOlbmVkbGlnIDE5OTFNMDEtMjAxNE0wNQ0KDQpIZXIgZm9yZGVsdCBww6Uga2rDuG5uLiBWaSBoYXIgYDQxOCoxODUqMj0xNTQ2NjBgIHJla2tlciBzb20gZXIgdW5kZXIgZ3JlbnNlbiBww6UgODAway4gS2FuIGRlcmZvciBoZW50ZSBhbHQgcMOlIGVuIGdhbmcuIERldCBlciBuw6UgaWtrZSBsZW5nZXIgQWxkZXIgc29tIGVyIHN0YXRpc3Rpa2sgdmFyaWFiZWwgc8OlIGRlbiBtw6UgYnl0dGVzIHV0IG1lZCBgS2pvbm4gPWANCg0KYGBge3IsIGVjaG89RkFMU0V9DQphcmJsX3Bfa2pvbm4gPC0gQXBpRGF0YSgNCiAgICAwNDQ3MSwNCiAgICBSZWdpb24gPSBrb21fdmVjLA0KICAgIFRpZCA9IHRpZF92ZWMsDQogICAgS2pvbm4gPSBram9ubl92ZWMpDQoNCmRmX2FyYmxfcF9ram9ubiA8LSBkYXRhLmZyYW1lKA0KICAgIGtuciA9IGFyYmxfcF9ram9ubltbMl1dJFJlZ2lvbiwNCiAgICBrbmF2biA9IGFyYmxfcF9ram9ubltbMV1dJHJlZ2lvbiwNCiAgICBram9ubiA9IGFyYmxfcF9ram9ubltbMV1dJGtqw7hubiwNCiAgICB0aWQgPSBhcmJsX3Bfa2pvbm5bWzJdXSRUaWQsDQogICAgIyBhcmJlaWRzbMO4c2UgaSBwcm9zZW50DQogICAgYWxwX2sgPSBhcmJsX3Bfa2pvbm5bWzFdXSR2YWx1ZQ0KKQ0KYGBgDQoNCmBgYHtyfQ0KZGltKGRmX2FyYmxfcF9ram9ubikNCm5hbWVzKGRmX2FyYmxfcF9ram9ubikNCmBgYA0KDQojIyMgVGFiZWxsIDEwNTk0LCBBbnRhbGwgYXJiZWlkc2zDuHNlIHBlciBrb21tdW5lLCBldHRlciBrasO4bm4sIG3DpW5lZGxpZyAxOTkxTTAxLTIwMTRNMDUNCg0KQW50YWxsIHJla2tlciB2aWwgdsOmcmUgYDQxOCoxODUqMj0xNTQ2NjBgLg0KDQpJZ2plbiBlciBkZXQgYEtqb25uYCBvZyBpa2tlIGBBbGRlcmAgc29tIGVyIHN0YXRpc3Rpa2stdmFyaWFiZWwuDQoNCmBgYHtyfQ0KYXJibCA8LSBBcGlEYXRhKA0KICAgIDEwNTk0LA0KICAgIFJlZ2lvbiA9IGtvbV92ZWMsDQogICAgVGlkID0gdGlkX3ZlYywNCiAgICBLam9ubiA9IGtqb25uX3ZlYykNCg0KZGZfYXJibCA8LSBkYXRhLmZyYW1lKA0KICAgIGtuciA9IGFyYmxbWzJdXSRSZWdpb24sDQogICAga25hdm4gPSBhcmJsW1sxXV0kcmVnaW9uLA0KICAgIHRpZCA9IGFyYmxbWzJdXSRUaWQsDQogICAga2pvbm4gPSBhcmJsW1sxXV0ka2rDuG5uLA0KICAgICMgYXJiZWlkc2zDuHNlIGkgcHJvc2VudA0KICAgIGFsID0gYXJibFtbMV1dJHZhbHVlDQopDQpgYGANCg0KYGBge3J9DQpkaW0oZGZfYXJibCkNCm5hbWVzKGRmX2FyYmwpDQpgYGANCg0KIyMjIFRhYmVsbCAwNzQ1OSwgQmVmb2xrbmluZyDDpXJza2xhc3NlciAwMDAtMTA1KyBmb3Igw6VyZW5lIDE5OTktMjAxNA0KDQpBbnRhbGwgcmVra2VyIGJsaXIgYDQxOCoxNioxMDYqMj0xNDE3ODU2YCBzb20gZXIgbWVyIGVubiBtYWtzIGdyZW5zZW4gcMOlIDgwMGsuIFNwbGl0dGVyIGRlcmZvciBww6Uga2rDuG5uIG9nIGbDpXIgNzA4OTI4IHJla2tlciBmb3IgaHZlcnQga2rDuG5uLg0KDQpCcnVrIGMoKSBvZyBzdHJfcGFkKCkgdGlsIMOlIGxhZ2UgZW4gYGFsZGVyX2tsYXNzZV92ZWNgIHDDpSBmb3JtZW4gIjAwMCIsICIwMDEiLCAiMDAyIiAuLi4gIjEwNCIsICIxMDUrIi4gQnJ1ayBkZW5uZSBzb20gdmVyZGkgZm9yIEFsZGVyIGkgYEFwaURhdGEoKWAga2FsbGV0LCBkdnMuIGBBbGRlciA9IGFsZGVyX2tsYXNzZV92ZWNgLiBCcnVrIGhodi4gS2pvbm4gPSAiS3Zpbm5lciIgb2cgS2pvbm4gPSAiTWVubiIgZm9yIMOlIGhlbnRlIGRlIHJlc3Bla3RpdmUgZGF0YXNldHRlbmUuDQoNCmBgYHtyLCBlY2hvPUZBTFNFfQ0KYWxkZXJfa2xhc3NlX3ZlYyA8LSBjKHN0cl9wYWQoMToxMDQsIHdpZHRoID0gMywgcGFkID0gIjAiKSwgIjEwNSsiKQ0KYGBgDQoNCmBgYHtyfQ0KbGVuZ3RoKGFsZGVyX2tsYXNzZV92ZWMpDQpgYGANCg0KYGBge3J9DQpjKGhlYWQoYWxkZXJfa2xhc3NlX3ZlYywgbiA9IDUpLCAiLi4uIiwgdGFpbChhbGRlcl9rbGFzc2VfdmVjLCBuID0gNSkpDQpgYGANCg0KDQojIyMjIEt2aW5uZXINCg0KYGBge3J9DQojIE3DpSBzcGxpdHRlIHDDpSBrasO4bm4gcGdhIG1ha3MgZ3JlbnNlIHDDpSA4MDAwMDAgcmVra2VyDQpiZWZfSyA8LSBBcGlEYXRhKA0KICAgIDA3NDU5LA0KICAgIFJlZ2lvbiA9IGtvbV92ZWMsDQogICAgVGlkID0gYXMuY2hhcmFjdGVyKDE5OTk6MjAxNCksDQogICAgQWxkZXIgPSBhbGRlcl9rbGFzc2VfdmVjLA0KICAgIEtqb25uID0gIkt2aW5uZXIiDQopDQoNCmRmX2JlZl9LIDwtIGRhdGEuZnJhbWUoDQogICAga25yID0gYmVmX0tbWzJdXSRSZWdpb24sDQogICAga25hdm4gPSBiZWZfS1tbMV1dJHJlZ2lvbiwNCiAgICB0aWQgPSBiZWZfS1tbMl1dJFRpZCwNCiAgICAjIFZpbCBoYSBLdmlubmVyLCBNZW5uIGlra2UgMiwgMSBpIGJlZl9LW1syXV0kS2pvbm4NCiAgICBram9ubiA9IGJlZl9LW1sxXV0ka2rDuG5uLA0KICAgICMgdmVsZ2VyIGFsZGVyIHNvbSAwMDAgMDAxIGV0Yw0KICAgIGFsZGVyID0gYmVmX0tbWzJdXSRBbGRlciwNCiAgICBiZWYgPSBiZWZfS1tbMl1dJHZhbHVlDQopDQpgYGANCg0KYGBge3J9DQpkaW0oZGZfYmVmX0spDQpgYGANCg0KIyMjIyBNZW5uDQoNCkhlbnQgbmVkIHRpbHN2YXJlbmRlIGJlZm9sa25pbmdzZGF0YSBmb3IgbWVubi4NCg0KYGBge3J9DQpiZWZfTSA8LSBBcGlEYXRhKA0KICAgIDA3NDU5LA0KICAgIFJlZ2lvbiA9IGtvbV92ZWMsDQogICAgVGlkID0gYXMuY2hhcmFjdGVyKDE5OTk6MjAxNCksDQogICAgQWxkZXIgPSBhbGRlcl9rbGFzc2VfdmVjLA0KICAgIEtqb25uID0gIk1lbm4iKQ0KDQpkZl9iZWZfTSA8LSBkYXRhLmZyYW1lKA0KICAgIGtuciA9IGJlZl9NW1syXV0kUmVnaW9uLA0KICAgIGtuYXZuID0gYmVmX01bWzFdXSRyZWdpb24sDQogICAgdGlkID0gYmVmX01bWzJdXSRUaWQsDQogICAgIyBWaWwgaGEgS3Zpbm5lciwgTWVubiBpa2tlIDIsIDEgaSBiZWZfS1tbMl1dJEtqb25uDQogICAga2pvbm4gPSBiZWZfTVtbMV1dJGtqw7hubiwNCiAgICAjIHZlbGdlciBhbGRlciBzb20gMDAwIDAwMSBldGMNCiAgICBhbGRlciA9IGJlZl9NW1syXV0kQWxkZXIsDQogICAgYmVmID0gYmVmX01bWzJdXSR2YWx1ZQ0KKQ0KYGBgDQoNCmBgYHtyfQ0KZGltKGRmX2JlZl9NKQ0KYGBgDQoNCiMjIyBXcml0ZSBvdXQgdGhlIGRhdGFmcmFtZXMNCg0KRm9yIGtvbnRyb2xsLg0KDQpgYGB7cn0NCm5hbWVzKGRmX2FyYmxfcF9hbGRlcikNCm5hbWVzKGRmX2FyYmxfcF9ram9ubikNCm5hbWVzKGRmX2FyYmwpDQpuYW1lcyhkZl9iZWZfSykNCm5hbWVzKGRmX2JlZl9NKQ0KYGBgDQoNCmBgYHtyfQ0KZGltKGRmX2FyYmxfcF9hbGRlcikNCmRpbShkZl9hcmJsX3Bfa2pvbm4pDQpkaW0oZGZfYXJibCkNCmRpbShkZl9iZWZfSykNCmRpbShkZl9iZWZfTSkNCmBgYA0KDQpgYGB7cn0NCndyaXRlX2NzdihkZl9hcmJsX3BfYWxkZXIsIGZpbGUgPSAiLi9zc2JfZGZfYXJibF9wX2FsZGVyLmNzdiIpDQp3cml0ZV9jc3YoZGZfYXJibF9wX2tqb25uLCBmaWxlID0gIi4vc3NiX2RmX2FyYmxfcF9ram9ubi5jc3YiKQ0Kd3JpdGVfY3N2KGRmX2FyYmwsIGZpbGUgPSAiLi9zc2JfZGZfYXJibC5jc3YiKQ0Kd3JpdGVfY3N2KGRmX2JlZl9LLCBmaWxlID0gIi4vc3NiX2RmX2JlZl9LLmNzdiIpDQp3cml0ZV9jc3YoZGZfYmVmX00sIGZpbGUgPSAiLi9zc2JfZGZfYmVmX00uY3N2IikNCmBgYA0KDQojIyBPcHByeWRkaW5nDQoNClZpIGhhciBsYWdyZXQgZGV0IHZpIGhhciBoZW50ZXQgb2cga2FuIG7DpSByeWRkZSBvcHAuDQoNCmBgYHtyfQ0KIyBGamVybiAjIGZyYSBuZXN0ZSBodmlzIGVuIHZpbCBzbGV0dGUgYWxsZSBvYmplY3Rlcg0Kcm0obGlzdCA9IGxzKCkpDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkFzc2lnbm1lbnQgNCINCm91dHB1dDoNCiAgcGRmX2RvY3VtZW50OiBkZWZhdWx0DQogIGh0bWxfbm90ZWJvb2s6IGRlZmF1bHQNCi0tLQ0KDQpgYGB7ciBzZXR1cH0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShsdWJyaWRhdGUpDQpgYGANCg0KIyBBc3NpZ25tZW50IDQ7ZGVsIDI7IFRpZHkgZGF0YQ0KDQpJIGRlbm5lIGZpbGVuIHNrYWwgdmkgbGVzZSBpbm4gcsOlZGF0YWVuZSB2aSBoZW50ZXQgZnJhIFNTQiBpIGBnZXQtc3NiLWRhdGEuUm1kYC4gVmkgc2thbCBnasO4cmUgZGF0YWVuZSDCq3RpZHnCuyBvZyBrb21iaW5lcmUgYXJiZWlkc2zDuHNoZXRzZGF0YWVuZSBzb20gZXIgbcOlbmVkbGlnZSB0aWwgZW4gc3RvciDCq3RpZHnCuyB0aWJibGUuIFZpZGVyZSBza2FsIHZpIGtvbWJpbmVyZSBiZWZvbGtuaW5nc2RhdGFlbmUgc29tIGVyIMOlcmxpZ2UgdGlsIGVuIHN0b3Igwqt0aWR5wrsgdGliYmxlLiBEaXNzZSB0byB0aWJibGUtZW5lIHNrYWwgc8OlIGxhZ3JlcyBzb20gYC5jc3ZgIGZpbGVyIGkgbWFwcGVuIGRhdGEuIERpc3NlIHRvIHZpbCBzw6Ugc2VuZXJlIGJsaSBsZXN0IGlubiBpIGZpbGVuIGBtb2RlbC5SbWRgIG9nIHbDpnJlIHV0Z2FuZ3NwdW5rdGV0IGZvciB2w6VydCBtb2RlbGxlcmluZ3NhcmJlaWRlLg0KDQpMZXNlciBpbm4gZmlsZW5lDQoNCmBgYHtyfQ0KZGZfYXJibF9wX2FsZGVyIDwtIHJlYWRfY3N2KGZpbGUgPSAic3NiX2RmX2FyYmxfcF9hbGRlci5jc3YiKQ0KZGZfYXJibF9wX2tqb25uIDwtIHJlYWRfY3N2KGZpbGUgPSAic3NiX2RmX2FyYmxfcF9ram9ubi5jc3YiKQ0KZGZfYXJibCA8LSByZWFkX2NzdihmaWxlID0gInNzYl9kZl9hcmJsLmNzdiIpDQpkZl9iZWZfSyA8LSByZWFkX2NzdihmaWxlID0gInNzYl9kZl9iZWZfSy5jc3YiKQ0KZGZfYmVmX00gPC0gcmVhZF9jc3YoZmlsZSA9ICJzc2JfZGZfYmVmX00uY3N2IikNCmBgYA0KDQojIyBQcm9ibGVtIG1lZCBOQQ0KDQpWaSBoYXIgZXQgcHJvYmxlbSBtZWQgTkEgZm9yIHNtw6Uga29tbXVuZXIgaSBgZGZfYXJibGAgLiDDhXJzYWtlbiBlciBzw6VrYWx0IMKrcHJpa2tpbmfCuyB1dGZyYSBwZXJzb252ZXJuaGVuc3luLiBFciBkZXQgZsOmcnJlIGVubiAzIChkdnMuIDAsIDEsIDIpIHBlcnNvbmVyIGkgZW4ga2F0ZWdvcmkgc8OlIG1lbmVyIFNTQiBhdCBkZXQgYmxpciBtdWxpZyDDpSBpZGVudGlmaXNlcmUgZW5rZWx0cGVyc29uZXIuIERlcmZvciDCq3ByaWtrZXLCuyBkZSwgZHZzLiBsYWdlciBOQSwgdmVyZGllciBmb3Igb2JzZXJ2YXNqb25lbmUuIFZpIGxhciBkZXR0ZSBsaWdnZSBuw6UsIG1lbiBldCBwcm9ibGVtIHNvbSBkZXQgZXIgZ3JlaXQgw6UgdsOmcmUgb3BwbWVya3NvbSBww6UuIERlcmUga29tbWVyIGdhbnNrZSBzaWtrZXJ0IHRpbCDDpSBzdMO4dGUgcMOlIGRldCBzZW5lcmUgaSBzdHVkaWV0Lg0KDQpgYGB7cn0NCiNVdHNpcmENClZpZXcoZGZfYXJibFtkZl9hcmJsJGtuciA9PSAiMTE1MSIsXSkNClZpZXcoZGZfYXJibF9wX2FsZGVyW2RmX2FyYmxfcF9hbGRlciRrbnIgPT0gIjExNTEiLF0pDQpgYGANCg0KIyBHasO4cmUgYXJiZWlkc2zDuHNoZXQgwqt0aWR5wrsNCg0KIyMgR2rDuHJlIGFyYmVpZHNsw7hzZSBpICUgYWxkZXJzZ3J1cHBlciB0aWR5OyAoYGRmX2FyYmxfcF9hbGRlcmApDQoNCmBgYHtyfQ0KaGVhZChkZl9hcmJsX3BfYWxkZXIsIG4gPSAyKQ0KYGBgDQoNCiMjIyBFbmRyZSBrYXRlZ29yaWVyIGkgdmFyaWFiZWxlbiBhbGRlcg0KDQrDhSBoYSBrYXRlZ29yaWVuZSAiMTUtNzQgw6VyIiBldGMuIGVyIMOlIGJlIG9tIHByb2JsZW1lciBzZW5lcmUuIFZpIGVuZHJlciB0aWwgIjE1Xzc0IiBldGMuLg0KDQpgYGB7cn0NCmRmX2FyYmxfcF9hbGRlciA8LSBkZl9hcmJsX3BfYWxkZXIgJT4lIA0KICAgIG11dGF0ZSgNCiAgICAgICAgYWxkZXIgPSBjYXNlX3doZW4oDQogICAgICAgICAgICBhbGRlciA9PSAiMTUtNzQgw6VyIiB+ICIxNV83NCIsDQogICAgICAgICAgICBhbGRlciA9PSAiMTUtMjkgw6VyIiB+ICIxNV8yOSIsDQogICAgICAgICAgICBhbGRlciA9PSAiMzAtNzQgw6VyIiB+ICIzMF83NCINCiAgICAgICAgKQ0KICAgICkNCmBgYA0KDQojIyMgQnJ1ayBzZXBhcmF0ZSBmb3Igc3BsaXR0ZSB0aWQgdGlsIGFhciBvZyBtbmQNCg0KYGBge3J9DQojZW5kcmVyIG9nc8OlIG5hdm4gZnJhIGRmX2FyYmxfcF9hbGRlciB0aWwgYXJibG9zX2FsZGVyc2dycA0KYXJibG9zX2FsZGVyc2dycCA8LSBzZXBhcmF0ZShkZl9hcmJsX3BfYWxkZXIsICJ0aWQiLCBjKCJhYXIiLCAibW5kIiksIHNlcCA9ICJNIikNCnJtKGRmX2FyYmxfcF9hbGRlcikNCmBgYA0KDQojIyMgRmlrc2Uga25hdm4NCg0KVmkgc2thbCBmamVybmUgKC0yMDE5KSBldGMgc29tIHNramVtbWVyIG5hdm5lbmUuIEhlciBmw6VyIHZpIGJydWsgZm9yIMKrcmVndWxhciBleHByZXNzaW9uc8K7IGZyYSBrYXBpdHRlbCAxNCAqU3RyaW5ncyouIEplZyB2aWwgYW5iZWZhbGUgZnVua3Nqb25lbiBgc3RyX3JlbW92ZSgpYC4gTsOlciBkZXQgZ2plbGRlciBgcGF0dGVybmAgc8OlIGh1c2sgYXQgZGV0IHZpIHZpbCBmamVybmUgc3RhcnRlciBtZWQgKm1lbGxvbXJvbSosIGbDuHIgdmkgZsOlciBlbiBwYXJlbnRlcywgc8OlIGtvbW1lciB0YWxsIG9nIGVuIGJpbmRlc3RyZWsgKGJydWsgY2hhcmFjdGVyIGNsYXNzKSBmw7hyIGRldCBoZWxlIGF2c2x1dHRlcyBtZWQgZW4gcGFyZW50ZXMgc2x1dHQuIEh1c2sgYXQgdmkgbcOlIGJlbnl0dGUgYFxcYCBmb3Igwqtlc2NhcGXCuy4NCg0KYGBge3J9DQojIEZvciDDpSBmaW5uZSByaWt0aWcgcGF0dGVybiwgZmplcm4gbsOlciBmZXJkaWcNCiMgRmplcm4gbsOlciBkdSBoYXIgZnVubmV0IGV0IHBldHRlcm4gc29tIHZpcmtlcg0KdGVzdCA8LSB0aWJibGUodGVzdF9uYXZuID0gYygiSGFsZGVuICgtMjAxOSkiLCAiTW9zcyAoLTIwMTkpIiwgIlNhcnBzYm9yZyAoMTk5Mi0yMDE5KSIsICJGcmVkcmlrc3RhZCAoMTk5NC0yMDE5KSIsICJIdmFsZXIgKC0yMDE5KSIpKQ0Kc3RyX3JlbW92ZSgNCiAgICBzdHJpbmcgPSB0ZXN0JHRlc3RfbmF2biwgDQogICAgcGF0dGVybiA9ICJIIikNCmBgYA0KDQoNCmBgYHtyfQ0KIyBGamVybiAoLTIwMTkpIGV0Yw0KYXJibG9zX2FsZGVyc2dycCRrbmF2biA8LSBzdHJfcmVtb3ZlKA0KICBzdHJpbmcgPSBhcmJsb3NfYWxkZXJzZ3JwJGtuYXZuLA0KICBwYXR0ZXJuID0gZml4ZWQoIiAoLTIwMTkpIikpDQphcmJsb3NfYWxkZXJzZ3JwJGtuYXZuIDwtIHN0cl9yZW1vdmUoDQogIHN0cmluZyA9IGFyYmxvc19hbGRlcnNncnAka25hdm4sDQogIHBhdHRlcm4gPSBmaXhlZCgiICgxOTkyLTIwMTkpIikpDQphcmJsb3NfYWxkZXJzZ3JwJGtuYXZuIDwtIHN0cl9yZW1vdmUoDQogIHN0cmluZyA9IGFyYmxvc19hbGRlcnNncnAka25hdm4sDQogIHBhdHRlcm4gPSBmaXhlZCgiICgxOTk0LTIwMTkpIikpDQpgYGANCg0KU2xpayBza2FsIGRlIDEwIGbDuHJzdGUgbmF2bmVuZSBuw6Ugc2UgdXQ6DQoNCmBgYHtyfQ0KaGVhZCh1bmlxdWUoYXJibG9zX2FsZGVyc2dycCRrbmF2biksIG4gPSAxMCkNCmBgYA0KDQojIyMgUGl2b3QgZm9yIMOlIGdqw7hyZSB0aWR5DQoNCmFyYmxvc19hbGRlcnNncnAgZXIgaWtrZSB0aWR5LiBIdmVyIG9ic2VydmFzam9uIGVyIHNwcmVkZCBvdmVyIHRyZSByZWtrZSwgaGh2LiAxNV8yOSwgMzBfNzQgb2cgMTVfNzQuIFBpdm90IGRhdGFmcmFtZW4gYGFyYmxvc19hbGRlcnNncnBgIHNsaWsgYXQgdmkgZsOlciBlbiBvYnNlcnZhc2pvbiBwZXIgcmVra2UuIEJydWsgb3Bzam9uZW4gYG5hbWVzX3ByZWZpeGAgb2cgc2V0dCBkZW5uZSBsaWsgImFscF8iIHNsaWsgYXQgZGUgdHJlIG55ZSB2YXJpYWJlbG5hdm5lbmUgc3RhcnRlciBtZWQgZGV0dGUuIEJydWsgc2FtdGlkaWcgbXV0YXRlIHRpbCDDpSBlbmRyZSB2YXJpYWJsZW5lIGBhYXJgb2cgYG1uZGAgdGlsIGludGVnZXIuDQoNCmBgYHtyfQ0KYXJibG9zX2FsZGVyc2dycCA8LSBhcmJsb3NfYWxkZXJzZ3JwICU+JQ0KICBtdXRhdGUoYWxkZXIsICkNCiAgcGl2b3Rfd2lkZXIoDQogICAgbmFtZXNfZnJvbSA9IGFsZGVyLA0KICAgIG5hbWVzX3ByZWZpeCA9IGMoImFscF8xNV83NCIsICJhbHBfMTVfMjkiLCAiYWxwXzMwXzc0IikNCiAgKQ0KYGBgDQoNClNsaWsgc2thbCBgYXJibG9zX2FsZGVyc2dycGAgbsOlIHNlIHV0Lg0KDQpgYGB7cn0NCnByaW50KGFyYmxvc19hbGRlcnNncnAsIG4gPSAyKQ0KYGBgDQoNCg0KRGEgc2thbCBgYXJibG9zX2FsZGVyc2dycGAgdsOmcmUgwqt0aWR5wrsuDQoNCiMjIEdqw7hyZSBhcmJlaWRsw7hzZSAocHJvc2VudCkgZm9yZGVsdCBww6Uga2rDuG5uIHRpZHk7IChgZGZfYXJibF9wX2tqb25uYCkNCg0KYGRmX2FyYmxfcF9ram9ubmAgZXIgKmlra2UqIHRpZHkuDQoNCmBgYHtyfQ0KcHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIHRpZCwga2pvbm4pLCBuID0gMikNCmBgYA0KDQpIdmEgc29tIG3DpSBmaWtzZXMgaWBkZl9hcmJsX3Bfa2pvbm5gOg0KDQoxLiBGaWtzIGtuYXZuIHZoYS4gYHN0cl9yZW1vdmUoKWANCjIuIFNwbGl0dGUgdGlkIGkgYGFhcmAgb2cgYG1uZGAsIGdqw7hyIHRpbCBpbnRlZ2VyIGkgc2FtbWUgc2xlbmdlbg0KMy4gRW4gb2JzZXJ2YXNqb24gcGVyIHJla2tlLCBhbHBfS3Zpbm5lciwgYWxwX01lbm4gc29tIHZhcmlhYmVsbmF2bg0KDQojIyMgRmlrc2VyIGtuYXZuDQoNCmBgYHtyLCBlY2hvPUZBTFNFfQ0KIyBGZXJuICgtMjAxOSkgZXRjDQojZGZfYXJibF9wX2tqb25uJGtuYXZuIDwtIA0KYGBgDQoNCmBgYHtyfQ0KcHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIHRpZCwga2pvbm4pLCBuID0gMikNCmBgYA0KDQojIyMgU3BsaXR0ZSB0aWQNCg0KYGBge3IsIGVjaG89RkFMU0V9DQojZGZfYXJibF9wX2tqb25uIDwtIA0KYGBgDQoNCmBgYHtyfQ0KcHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIGFhciwgbW5kLCBram9ubiksIG4gPSAyKQ0KYGBgDQoNCiMjIyBFbiBvYnNlcnZhc2pvbiBwZXIgcmVra2UNCg0KYGBge3IsIGVjaG89RkFMU0V9DQojZGZfYXJibF9wX2tqb25uIDwtIA0KYGBgDQoNCmBgYHtyfQ0KcHJpbnQoYXJyYW5nZShkZl9hcmJsX3Bfa2pvbm4sIGtuciwga25hdm4sIGFhciwgbW5kKSwgbiA9IDIpDQpgYGANCg0KRGEgZXIgYGRmX2FyYmxfcF9ram9ubmAgwqt0aWR5wrsuDQoNCiMjIEdqw7hyZSBhbnRhbGwgYXJiZWlkc2zDuHNlIGZvcmRlbHQgcMOlIGtqw7hubiB0aWR5OyAoYGRmX2FyYmxgKQ0KDQpgYGB7cn0NCnByaW50KGRmX2FyYmwsIG4gPSAyKQ0KYGBgDQoNCkh2YSBzb20gbcOlIGZpa3NlcyBpIGBkZl9hcmJsYDoNCg0KMS4gRmlrcyBrbmF2biB2aGEuIGBzdHJfcmVtb3ZlKClgDQoyLiBTcGxpdHRlIHRpZCBpIGBhYXJgIG9nIGBtbmRgLCBnasO4ciB0aWwgaW50ZWdlciBpIHNhbW1lIHNsZW5nZW4NCjMuIEVuIG9ic2VydmFzam9uIHBlciByZWtrZSwgYWxfS3Zpbm5lciwgYWxfTWVubiBzb20gdmFyaWFiZWxuYXZuDQoNCkdqw7hyIHNvbSBvdmVuZm9yLg0KDQpgYGB7ciwgZWNobz1GQUxTRX0NCiMgRmlrc2UgbmF2bg0KI2RmX2FyYmwka25hdm4gPC0gDQojZGZfYXJibCA8LSANCiNkZl9hcmJsIDwtIA0KYGBgDQoNCkhhciBkdSBnam9ydCBkZXQgcmlrdGlnIHNrYWwgYGRmX2FyYmxgIG7DpSBzZSBzbGlrIHV0Lg0KDQpgYGB7cn0NCnByaW50KGRmX2FyYmwsIG4gPSAyKQ0KYGBgDQoNCiMjIFNhbWxlIG3DpW5lZGxpZ2UgYXJiZWlzbMO4c2hldHMtZGF0YSBpIGVuIHRpYmJsZQ0KDQpGw7hyIHZpIHNsw6VyIGkgc2FtbWVuIGRlIHRyZSB0aWJibGUtZW5lIHZpIGhhciBnam9ydCDCq3RpZHnCuyBlciBkZXQgbHVydCDDpSBzamVra2UgZW4gc2lzdGUgZ2FuZyBhdCBkZSBlciBww6UgZGVuIGZvcm1lbiB2aSDDuG5za2VyLg0KDQojIyMgU2zDpXIgc2FtbWVuIHRyZSB0aWJibGUgdGlsIGVuDQoNClRlbmsgbsO4eWUgZ2plbm5vbSBodmlsa2UgdmFyaWFibGVyIG1hbiBza2FsIMKram9pbmXCuyBww6UuDQoNCmBgYHtyLCBlY2hvPUZBTFNFfQ0KIyBhcmJlaWRzbMO4c2UgMTk5OSB0aWwgMjAxNCBtw6VuZWRsaWdlIGRhdGENCiNhbDk5MTRtIDwtIA0KYGBgDQoNCmBgYHtyfQ0KcHJpbnQoYWw5OTE0bSwgbiA9IDIpDQpgYGANCmBgYHtyfQ0KbmFtZXMoYWw5OTE0bSkNCmRpbShhbDk5MTRtKQ0KYGBgDQoNCiMjIEdqw7hyZSBiZWZvbGtuaW5nIMKrdGlkecK7DQoNClZpIG3DpXR0ZSBkZWxlIGJlZm9sa25pbmcgaSBNZW5uIG9nIEt2aW5uZXIgZGEgdmkgaGVudGV0IGRhdGFlbmUuIE7DpSB2aWwgdmkgZ2rDuHJlIGRlbSDCq3RpZHnCuyBvZyBzbMOlIGRlbSBzYW1tZW4uDQoNCmBgYHtyfQ0KZGltKGRmX2JlZl9NKQ0KZGltKGRmX2JlZl9LKQ0KYGBgDQoNCmBgYHtyfQ0KcHJpbnQoYXJyYW5nZShkZl9iZWZfTSwga25yLCBrbmF2biwgdGlkLCBhbGRlciksIG4gPSAyKQ0KYGBgDQoNCkh2ZXIgb2JzZXJ2YXNqb24gZXIgc3ByZWR0IG92ZXIgMTA2IHJla2tlciENCg0KVmkgdmlsIGJydWtlIGbDuGxnZW5kZSBzdHJhdGVnaSBmb3Igw6UgZ2rDuHJlIGJlZm9sa25pbmcgwqt0aWR5wrs6DQoNCjEuIEVuZHJlIHZhcmlhYmVsLW5hdm4gYmVmIHRpbCBoaHYuIGRmX2JlZl9LIG9nIGRmX2JlZl9NLiBTbGV0dGUgdmFyaWFiZWxlbiBram9ubiBpIGLDpWRlIGRmX2JlZl9NIG9nIGRmX2JlZl9LLg0KMi4gRsO4cnN0IHNsw6Ugc2FtbWVuIE1lbm4gb2cgS3Zpbm5lciBzw6Ugdmkgc2xpcHBlciDDpSBnasO4cmUgYWx0IHRvIGdhbmdlci4NCjMuIEZpa3NlIG5hdm4NCjQuIFNraWZ0ZSBuYXZuIGZyYSB0aWQgdGlsIGFhcg0KNS4gR2rDuHJlIG9tIGFsZGVyIGZyYSBjaHIgdGlsIGludGVnZXINCjUuIExhZ2Ugw6Vyc2tsYXNzZXIgZm9yIGJlZm9sa25pbmdlbi4gVmkgdHJlbmdlciBpa2tlIDEwNg0KNi4gR2rDuHJlIHBpdm90XyBzw6UgdmkgYmxpciDCq3RpZHnCuw0KDQojIyMgRW5kcmUgdmFyaWFiZWwgbmF2biwgZmplcm5lIGtqb25uDQoNCmBgYHtyfQ0KZGZfYmVmX0sgPC0gZGZfYmVmX0sgJT4lIA0KICAgIHJlbmFtZShiZWZfSyA9IGJlZikgJT4lIA0KICAgIHNlbGVjdCgta2pvbm4pDQpkZl9iZWZfTSA8LSBkZl9iZWZfTSAlPiUgDQogICAgcmVuYW1lKGJlZl9NID0gYmVmKSAlPiUgDQogICAgc2VsZWN0KC1ram9ubikNCmBgYA0KDQojIyMgU2zDpSBzYW1tZW4gZGZfYmVmX0sgb2cgZGZfYmVmX00NCg0KYGBge3IsIGVjaG89RkFMU0V9DQojIEJlZm9sa25pbmcgMTk5OSB0aWwgMjAxNCBNZW5uIG9nIEt2aW5uZXINCiNiZWY5OTE0TUsgPC0gDQpgYGANCg0KYGBge3J9DQpkaW0oYmVmOTkxNE1LKQ0KbmFtZXMoYmVmOTkxNE1LKQ0KYGBgDQoNCiMjIyBGaWtzZXIga25hdm4NCg0KRmlrcyBrb21tdW5lbmF2bmVuZS4NCg0KYGBge3IsIGVjaG89RkFMU0V9DQojYmVmOTkxNE1LJGtuYXZuIDwtIA0KYGBgDQoNCiMjIyBTa2lmdGUgbmF2biBmcmEgdGlkIHRpbCBhYXINCg0KYGBge3IsIGVjaG89RkFMU0V9DQojYmVmOTkxNE1LIDwtIA0KYGBgDQoNCiMjIyBHasO4cmUgb20gYWxkZXIgZnJhIGNociB0aWwgaW50ZWdlcg0KDQpCcnVrIGbDuHJzdCBgc3RyX3JlcGxhY2UoKWAgdGlsIMOlIGVuZHJlICIxMDUrIiB0aWwgIjEwNSIuIEh1c2sgYXQgIisiIGVyIGV0IGF2IHRlZ25lbmUgc29tIGhhciBzcGVzaWVsbCBiZXR5ZG5pbmcgb2cgbcOlIMKrZXNjYXBlc8K7IG1lZCBgXFxgLiBHasO4ciBzw6Ugb20gZnJhIGNociB0aWwgaW50ZWdlci4NCg0KYGBge3J9DQpiZWY5OTE0TUsgPC0gYmVmOTkxNE1LICU+JQ0KICAgIG11dGF0ZSgNCiAgICAgICAgYWxkZXIgPSBzdHJfcmVwbGFjZShhbGRlciwgIjEwNVxcKyIsICIxMDUiKSwNCiAgICAgICAgYWxkZXIgPSBhcy5pbnRlZ2VyKGFsZGVyKQ0KICAgICkNCmBgYA0KDQojIyMgTGFnZSDDpXJza2xhc3NlciBmb3IgYmVmb2xrbmluZ2VuDQoNClZpIHZpbCBiZW55dHRlIMOlcnNrbGFzc2VuZSAiMF8xNCIsICIxNV8yOSIsICIzMF83NCIgb2cgIjc1XzEwNSIgc2lkZW4gZGlzc2Ugc2Ftc3ZhcmVyIG1lZCBkZW0gYnJ1a3QgZm9yIGFyYmVpZHNsw7hzaGV0LiBCcnVrIGBtdXRhdGUoKWAsIGBjYXNlX3doZW4oKWAgb2cgYGFsZGVyICVpbiUgYygwOjE0KSB+ICIwXzE0ImAgb3N2LiBmb3Igw6UgZGVmaW5lcmUgw6Vyc2tsYXNzZW5lLiBHaSB2YXJpYWJlbGVuIG1lZCDDpXJza2xhc3NlbmUgbmF2bmV0IGBhbGRfaW50YC4gQnJ1ayBzw6UgYGdyb3VwX2J5KClgIHDDpSBrbnIsIGtuYXZuLCBhYXIgb2cgYWxkX2ludCBvZyBzdW1tZXIgb3BwIHZoYS4gYHN1bSgpYC4gTGEgc2lzdGUgbGluamVuIGkgYHN1bW1hcmlzZSgpYCB2w6ZyZSBgYmVmX01LID0gYmVmX0sgKyBiZWZfTWAgc8OlIGbDpXIgdmkgb2dzw6UgbWVkIG9zcyB0b3RhbCBiZWZvbGtuaW5nIGZvciBkZSB1bGlrZSDDpXJza2xhc3NlbmUuDQoNCmBgYHtyLCBlY2hvPUZBTFNFfQ0KI2JlZjk5MTRNSyA8LSANCmBgYA0KDQpgYGB7cn0NCnByaW50KGJlZjk5MTRNSywgbSA9IDIpDQpgYGANCg0KIyMjIEdqw7hyIGBwaXZvdF9gIHPDpSB2aSBibGlyIMKrdGlkecK7Lg0KDQpgYGB7ciwgZWNobz1GQUxTRX0NCiNiZWY5OTE0TUsgPC0gDQpgYGANCg0KR2rDuHIgZHUgdGluZyByZXR0IHNrYWwgYGJlZjk5MTRNS2AgbsOlIHNlIHNsaWsgdXQ6DQoNCmBgYHtyfQ0KcHJpbnQoYmVmOTkxNE1LLCBtID0gMikNCmBgYA0KDQpvZyBoYSBkaW1lbnNqb25lbmU6DQoNCmBgYHtyfQ0KZGltKGJlZjk5MTRNSykNCmBgYA0KDQojIyBTa3JpdmUgwqt0aWR5wrsgZGF0YSB0aWwgZmlsDQoNCmBgYHtyfQ0Kd3JpdGVfY3N2KGFsOTkxNG0sICJhbDk5MTRtLmNzdiIpDQp3cml0ZV9jc3YoYmVmOTkxNE1LLCAiYmVmOTkxNE1LLmNzdiIpDQpgYGANCg0KYGBge3J9DQojcm0obGlzdCA9IGxzKCkpDQpgYGANCg0K</div>
 
 
 
@@ -2239,7 +2372,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("get-ssb-data.Rmd");
+  window.initializeSourceEmbed("make-data-tidy.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

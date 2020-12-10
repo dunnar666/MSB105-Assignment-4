@@ -30,8 +30,8 @@ Vi har et problem med NA for små kommuner i `df_arbl` . Årsaken er såkalt «p
 
 ```{r}
 #Utsira
-#View(df_arbl[df_arbl$knr == "1151",])
-#View(df_arbl_p_alder[df_arbl_p_alder$knr == "1151",])
+View(df_arbl[df_arbl$knr == "1151",])
+View(df_arbl_p_alder[df_arbl_p_alder$knr == "1151",])
 ```
 
 # Gjøre arbeidsløshet «tidy»
@@ -59,10 +59,10 @@ df_arbl_p_alder <- df_arbl_p_alder %>%
 
 ### Bruk separate for splitte tid til aar og mnd
 
-```{r, echo=FALSE}
+```{r}
 #endrer også navn fra df_arbl_p_alder til arblos_aldersgrp
-#arblos_aldersgrp <- 
-#rm(df_arbl_p_alder)
+arblos_aldersgrp <- separate(df_arbl_p_alder, "tid", c("aar", "mnd"), sep = "M")
+rm(df_arbl_p_alder)
 ```
 
 ### Fikse knavn
@@ -75,14 +75,21 @@ Vi skal fjerne (-2019) etc som skjemmer navnene. Her får vi bruk for «regular 
 test <- tibble(test_navn = c("Halden (-2019)", "Moss (-2019)", "Sarpsborg (1992-2019)", "Fredrikstad (1994-2019)", "Hvaler (-2019)"))
 str_remove(
     string = test$test_navn, 
-    pattern = "H"
-    )
+    pattern = "H")
 ```
 
 
-```{r, echo=FALSE}
-# Fern (-2019) etc
-#arblos_aldersgrp$knavn <- 
+```{r}
+# Fjern (-2019) etc
+arblos_aldersgrp$knavn <- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = fixed(" (-2019)"))
+arblos_aldersgrp$knavn <- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = fixed(" (1992-2019)"))
+arblos_aldersgrp$knavn <- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = fixed(" (1994-2019)"))
 ```
 
 Slik skal de 10 første navnene nå se ut:
@@ -95,8 +102,13 @@ head(unique(arblos_aldersgrp$knavn), n = 10)
 
 arblos_aldersgrp er ikke tidy. Hver observasjon er spredd over tre rekke, hhv. 15_29, 30_74 og 15_74. Pivot dataframen `arblos_aldersgrp` slik at vi får en observasjon per rekke. Bruk opsjonen `names_prefix` og sett denne lik "alp_" slik at de tre nye variabelnavnene starter med dette. Bruk samtidig mutate til å endre variablene `aar`og `mnd` til integer.
 
-```{r, echo=FALSE}
-#arblos_aldersgrp <- 
+```{r}
+arblos_aldersgrp <- arblos_aldersgrp %>%
+  mutate(alder, )
+  pivot_wider(
+    names_from = alder,
+    names_prefix = c("alp_15_74", "alp_15_29", "alp_30_74")
+  )
 ```
 
 Slik skal `arblos_aldersgrp` nå se ut.
