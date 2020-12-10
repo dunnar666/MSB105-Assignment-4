@@ -104,10 +104,13 @@ arblos_aldersgrp er ikke tidy. Hver observasjon er spredd over tre rekke, hhv. 1
 
 ```{r}
 arblos_aldersgrp <- arblos_aldersgrp %>%
-  mutate(alder, )
   pivot_wider(
     names_from = alder,
-    names_prefix = c("alp_15_74", "alp_15_29", "alp_30_74")
+    values_from = alp,
+    names_prefix = "alp_") %>% 
+  mutate(
+    aar = as.integer(aar),
+    mnd = as.integer(mnd)
   )
 ```
 
@@ -124,6 +127,7 @@ Da skal `arblos_aldersgrp` være «tidy».
 
 `df_arbl_p_kjonn` er *ikke* tidy.
 
+
 ```{r}
 print(arrange(df_arbl_p_kjonn, knr, knavn, tid, kjonn), n = 2)
 ```
@@ -136,9 +140,11 @@ Hva som må fikses i`df_arbl_p_kjonn`:
 
 ### Fikser knavn
 
-```{r, echo=FALSE}
-# Fern (-2019) etc
-#df_arbl_p_kjonn$knavn <- 
+```{r}
+# Fjern (-2019) etc
+df_arbl_p_kjonn$knavn <- str_remove(df_arbl_p_kjonn$knavn, pattern = fixed(" (-2019)"))
+df_arbl_p_kjonn$knavn <- str_remove(df_arbl_p_kjonn$knavn, pattern = fixed(" (1992-2019)"))
+df_arbl_p_kjonn$knavn <- str_remove(df_arbl_p_kjonn$knavn, pattern = fixed(" (1994-2019)"))
 ```
 
 ```{r}
@@ -147,8 +153,8 @@ print(arrange(df_arbl_p_kjonn, knr, knavn, tid, kjonn), n = 2)
 
 ### Splitte tid
 
-```{r, echo=FALSE}
-#df_arbl_p_kjonn <- 
+```{r}
+df_arbl_p_kjonn <- separate(data = df_arbl_p_kjonn, c('aar', 'mnd'), col = "tid", sep = "M")
 ```
 
 ```{r}
@@ -157,8 +163,17 @@ print(arrange(df_arbl_p_kjonn, knr, knavn, aar, mnd, kjonn), n = 2)
 
 ### En observasjon per rekke
 
-```{r, echo=FALSE}
-#df_arbl_p_kjonn <- 
+```{r}
+df_arbl_p_kjonn <- df_arbl_p_kjonn %>%
+  mutate(aar = as.integer(aar),
+         mnd = as.integer(mnd))
+
+df_arbl_p_kjonn <- df_arbl_p_kjonn %>%
+  pivot_wider(
+    names_from = kjonn,
+    values_from = alp_k,
+    names_prefix = c("alp_", "alp_")
+  )
 ```
 
 ```{r}
@@ -181,11 +196,34 @@ Hva som må fikses i `df_arbl`:
 
 Gjør som ovenfor.
 
-```{r, echo=FALSE}
+```{r}
 # Fikse navn
-#df_arbl$knavn <- 
-#df_arbl <- 
-#df_arbl <- 
+df_arbl$knavn <- str_remove(
+  df_arbl$knavn, 
+  pattern = fixed(" (-2019)"))
+df_arbl$knavn <- str_remove(
+  df_arbl$knavn, 
+  pattern = fixed(" (1992-2019)"))
+df_arbl$knavn <- str_remove(
+  df_arbl$knavn, 
+  pattern = fixed(" (1994-2019)"))
+
+df_arbl <- separate(
+  data = df_arbl, 
+  c('aar', 'mnd'), 
+  col = "tid", 
+  sep = "M")
+
+df_arbl <- df_arbl %>%
+  mutate(aar = as.integer(aar),
+         mnd = as.integer(mnd))
+
+df_arbl <- df_arbl %>%
+  pivot_wider(
+    names_from = kjonn,
+    values_from = al,
+    names_prefix = c("al_", "al_")
+  )
 ```
 
 Har du gjort det riktig skal `df_arbl` nå se slik ut.
@@ -202,14 +240,17 @@ Før vi slår i sammen de tre tibble-ene vi har gjort «tidy» er det lurt å sj
 
 Tenk nøye gjennom hvilke variabler man skal «joine» på.
 
-```{r, echo=FALSE}
+```{r}
 # arbeidsløse 1999 til 2014 månedlige data
-#al9914m <- 
+al9914m <- df_arbl %>% 
+  right_join(df_arbl_p_kjonn) %>% 
+  right_join(arblos_aldersgrp)
 ```
 
 ```{r}
 print(al9914m, n = 2)
 ```
+
 ```{r}
 names(al9914m)
 dim(al9914m)
@@ -253,9 +294,9 @@ df_bef_M <- df_bef_M %>%
 
 ### Slå sammen df_bef_K og df_bef_M
 
-```{r, echo=FALSE}
+```{r}
 # Befolkning 1999 til 2014 Menn og Kvinner
-#bef9914MK <- 
+bef9914MK <- 
 ```
 
 ```{r}

@@ -147,7 +147,7 @@ Antall rekker blir `418*16*106*2=1417856` som er mer enn maks grensen på 800k. 
 Bruk c() og str_pad() til å lage en `alder_klasse_vec` på formen "000", "001", "002" ... "104", "105+". Bruk denne som verdi for Alder i `ApiData()` kallet, dvs. `Alder = alder_klasse_vec`. Bruk hhv. Kjonn = "Kvinner" og Kjonn = "Menn" for å hente de respektive datasettene.
 
 ```{r, echo=FALSE}
-alder_klasse_vec <- c(str_pad(1:104, width = 3, pad = "0"), "105+")
+alder_klasse_vec <- c(str_pad(0:104, width = 3, pad = "0"), "105+")
 ```
 
 ```{r}
