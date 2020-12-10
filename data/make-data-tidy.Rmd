@@ -296,7 +296,8 @@ df_bef_M <- df_bef_M %>%
 
 ```{r}
 # Befolkning 1999 til 2014 Menn og Kvinner
-bef9914MK <- 
+bef9914MK <- df_bef_K %>% 
+  right_join(df_bef_M)
 ```
 
 ```{r}
@@ -308,14 +309,22 @@ names(bef9914MK)
 
 Fiks kommunenavnene.
 
-```{r, echo=FALSE}
-#bef9914MK$knavn <- 
+```{r}
+bef9914MK$knavn <- str_remove(
+  string = bef9914MK$knavn,
+  pattern = fixed(" (-2019)"))
+bef9914MK$knavn <- str_remove(
+  string = bef9914MK$knavn,
+  pattern = fixed(" (1992-2019)"))
+bef9914MK$knavn <- str_remove(
+  string = bef9914MK$knavn,
+  pattern = fixed(" (1994-2019)"))
 ```
 
 ### Skifte navn fra tid til aar
 
-```{r, echo=FALSE}
-#bef9914MK <- 
+```{r}
+bef9914MK <- separate(data = bef9914MK, "aar", col = "tid", sep = "M")
 ```
 
 ### Gjøre om alder fra chr til integer
@@ -335,7 +344,17 @@ bef9914MK <- bef9914MK %>%
 Vi vil benytte årsklassene "0_14", "15_29", "30_74" og "75_105" siden disse samsvarer med dem brukt for arbeidsløshet. Bruk `mutate()`, `case_when()` og `alder %in% c(0:14) ~ "0_14"` osv. for å definere årsklassene. Gi variabelen med årsklassene navnet `ald_int`. Bruk så `group_by()` på knr, knavn, aar og ald_int og summer opp vha. `sum()`. La siste linjen i `summarise()` være `bef_MK = bef_K + bef_M` så får vi også med oss total befolkning for de ulike årsklassene.
 
 ```{r, echo=FALSE}
-#bef9914MK <- 
+bef9914MK <- bef9914MK %>% 
+  mutate(alder = 
+    case_when(alder %in% c(0:14) ~ "0_14",
+              alder %in% c(15:29) ~ "15_29",
+              alder %in% c(30:74) ~ "30_74",
+              alder %in% c(75:105) ~ "75_105")) %>% 
+    rename(ald_int = alder)
+
+bef9914MK <- bef9914MK %>%
+  group_by(knr, knavn, aar, ald_int) %>% 
+  sum()
 ```
 
 ```{r}
