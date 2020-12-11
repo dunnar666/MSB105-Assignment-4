@@ -121,9 +121,9 @@ Plot dataen vha. geom_line() for de tre kategoriene. Bruk år som x-variabel.
 ```{r}
 wf %>% 
     ggplot(wf, mapping = aes(x = år)) +
-  geom_line(mapping = aes(y = wf_K/bef_K, color = "darkred")) +
+  geom_line(mapping = aes(y = wf_K/bef_K, color = "...")) +
   geom_line(mapping = aes(y = wf_M/bef_M, color = "darkblue")) +
-  geom_line(mapping = aes(y = wf_KM/bef_KM, color = "black")) +
+  geom_line(mapping = aes(y = wf_KM/bef_KM)) +
   ggtitle("Arbeidsstyrke relativt til befolkning. Menn blå, kvinner rød og totalt svart.") +
   theme(legend.position = "none")
 ```
@@ -158,10 +158,21 @@ print(wf_f, n = 5)
 ```
 Lag også en ny tibble bef_f fra bef som inneholder befolkningen i hvert fylke hvert år.
 
-```{r, echo=FALSE}
-# bef_f <- bef %>% 
-
+```{r}
+bef_f <- bef %>% 
+      mutate(
+        fylke = substr(knr, start = 1, stop = 2)
+    ) %>% 
+    group_by(aar, mnd, fylke) %>% 
+    summarise(
+        bef_K_f = sum(bef_K, na.rm = TRUE),
+        bef_M_f = sum(bef_M, na.rm = TRUE),
+        bef_KM_f = bef_K_f + bef_M_f
+    ) %>% 
+    mutate(år = make_date(aar, mnd, day=1L)) %>% 
+    select(aar, mnd, år, fylke, bef_K_f, bef_M_f, bef_KM_f)
 ```
+
 ```{r}
 bef_f
 ```
