@@ -277,6 +277,8 @@ wf_r %>%
 
 Forlar kort den generelle utviklingen i arbeidsstyrken. Hva er det som «redder oss»?
 
+*Over tid ser vi at menn generelt har har hatt en synkende trend (sett bort fra vestlandet som har hatt en økende trend). På den andre siden har kvinner hatt en generelt økende trend. Og samlet sett ser man vekts over tid, men samtdig en liten nedgang de siste årene*
+
 ## `nest()` arblos
 
 Da skal vi jobbe direkte med arbeidsløshet og lage lineære modeller for hver av de 418 kommunene. Modellen vi skal lage er på ingen måte perfekt. Vi er interessert i selve teknikken med å organisere dataene og kjøre modeller på mange subsett av dataene (her for hver kommune).
