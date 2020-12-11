@@ -134,7 +134,7 @@ Hvordan kan pukkelen rett før 2010 forklares?
 names(arblos)
 ```
 
-Vi vil nå generere dat for arbeidsstyrken på fylkesbasis. Husk at de to første sifferene i knr angir fylket en kommune ligger i. Bruk dataene i arblos til å finne arbeidsstyrken på fylkesbasis (wf_f). Start med å bruke mutate() til å lage en ny variabel fylke. Grupper så og finn wf_K_f, wf_M_f og wf_KM_f vha. summarise(). Lag til slutt en ny variabel år som en date. Velg til slutt de relevante variabelen vha. select().
+Vi vil nå generere data for arbeidsstyrken på fylkesbasis. Husk at de to første siffrene i knr angir fylket en kommune ligger i. Bruk dataene i arblos til å finne arbeidsstyrken på fylkesbasis (wf_f). Start med å bruke mutate() til å lage en ny variabel fylke. Grupper så og finn wf_K_f, wf_M_f og wf_KM_f vha. summarise(). Lag til slutt en ny variabel år som en date. Velg til slutt de relevante variabelen vha. select().
 
 ```{r}
 # årlige data per fylke
@@ -163,14 +163,13 @@ bef_f <- bef %>%
       mutate(
         fylke = substr(knr, start = 1, stop = 2)
     ) %>% 
-    group_by(aar, mnd, fylke) %>% 
+    group_by(aar, fylke) %>% 
     summarise(
         bef_K_f = sum(bef_K, na.rm = TRUE),
         bef_M_f = sum(bef_M, na.rm = TRUE),
         bef_KM_f = bef_K_f + bef_M_f
     ) %>% 
-    mutate(år = make_date(aar, mnd, day=1L)) %>% 
-    select(aar, mnd, år, fylke, bef_K_f, bef_M_f, bef_KM_f)
+    select(aar, fylke, bef_K_f, bef_M_f, bef_KM_f)
 ```
 
 ```{r}
@@ -179,8 +178,10 @@ bef_f
 
 Lag til slutt tibble-en wf_f_bef som innholde arbeidsstyrke (wf-f) og befolkning (bef-f) på fylkesnivå for hvert år.
 
-```{r, echo=FALSE}
-#wf_f_bef <- wf_f %>% 
+```{r}
+wf_f_bef <- wf_f %>% 
+  right_join(bef_f) %>% 
+  arrange(fylke, aar, mnd)
 ```
 
 Da skal wf_f_bef se slik ut:
@@ -190,10 +191,14 @@ print(arrange(wf_f_bef, fylke, aar, mnd))
 ```
 Plot nå arbeidsstyrke relativt til befolkning vha. geom_line()
 
-```{r, echo=FALSE}
+```{r}
 # kvinner og menn
-#wf_f_bef %>% 
-#    ggplot() +
+wf_f_bef %>%
+  ggplot() +
+  geom_line(wf_f_bef, mapping = aes(x = år,
+                                    y = wf_KM_f/bef_KM_f,
+                                    color = fylke)) +
+  theme(legend.position = "bottom")
 ```
 
 
@@ -229,9 +234,14 @@ wf_r <- wf_f_bef %>%
 
 Plot nå for regionene wf_KM_r/bef_KM_r, både vha. geom_line() og geom_smooth(). La farge vise regionene. Sett denne i ggplot() slik at det gjelder for både geom_line() og geom_smooth(). Sett i tillegg alpha = 0.5 for geom_line() og se = FALSE for geom_smooth(). Legg til theme(legend.position = "bottom") til slutt for å få legend under plottet.
 
-```{r, echo=FALSE}
+```{r}
 # kvinner og menn
-#wf_r %>% 
+wf_r %>% 
+  ggplot() +
+  geom_line(wf_r, mapping = aes(x = dato,
+                                    y = wf_KM_f/bef_KM_f,
+                                    color = fylke)) +
+  theme(legend.position = "bottom")
 ```
 
 Lag tilsvarende plot for kvinner.
