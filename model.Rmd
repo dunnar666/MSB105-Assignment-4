@@ -118,9 +118,14 @@ wf
 Vi vil nå se på arbeidsstyrke relativt til befolkning på landsbasis, dvs. wf_K/bef_K etc.
 Plot dataen vha. geom_line() for de tre kategoriene. Bruk år som x-variabel.
 
-```{r, echo=FALSE}
-#wf %>% 
-#    ggplot() +
+```{r}
+wf %>% 
+    ggplot(wf, mapping = aes(x = år)) +
+  geom_line(mapping = aes(y = wf_K/bef_K, color = "darkred")) +
+  geom_line(mapping = aes(y = wf_M/bef_M, color = "darkblue")) +
+  geom_line(mapping = aes(y = wf_KM/bef_KM, color = "black")) +
+  ggtitle("Arbeidsstyrke relativt til befolkning. Menn blå, kvinner rød og totalt svart.") +
+  theme(legend.position = "none")
 ```
 
 Hvordan kan pukkelen rett før 2010 forklares?
