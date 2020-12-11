@@ -294,17 +294,23 @@ arblos_by_knr <- arblos %>%
 print(arblos_by_knr, n = 4)
 arblos_by_knr$data[[1]]
 ```
+
 Vi har nå en tibble med data for hver kommune inne i tibble-en arblos_by_knr. 
 
-Skriv en funksjon som kjører den lineære modellen wf_KM ~ alp_15_29 + alp_30_74 på en input dataframe a_df. Kall funksjonen mod1 (i magel på noe bedre navn).
+Skriv en funksjon som kjører den lineære modellen wf_KM ~ alp_15_29 + alp_30_74 på en input dataframe a_df. Kall funksjonen mod1 (i mangel på noe bedre navn).
 
 ```{r}
-mod1 <- 
+mod1 <- function(a_df){
+  lm(wf_KM ~ alp_15_29 + alp_30_74, data = a_df)}
 ```
-KJøre så modellen vha. funksjonen mod1 på data i arblos_by_knr, og lag en list-column i arblos_by_knr som inneholder modellen. Kjør også tidy og glance fra broom på modellene for å få hhv. koeffisienter og ulike summary av modellen. Lagre resultatene i hhv. mod1_arblos, mod1_arblos_coef og mod1_arblos_sum (i siste er sum forkortelse for summary)
 
-```{r, echo=FALSE}
-#arblos_by_knr <- 
+Kjøre så modellen vha. funksjonen mod1 på data i arblos_by_knr, og lag en list-column i arblos_by_knr som inneholder modellen. Kjør også tidy og glance fra broom på modellene for å få hhv. koeffisienter og ulike summary av modellen. Lagre resultatene i hhv. mod1_arblos, mod1_arblos_coef og mod1_arblos_sum (i siste er sum forkortelse for summary)
+
+```{r}
+arblos_by_knr <- arblos_by_knr %>% 
+  mutate(mod1_arblos = map(data, .f = mod1)) %>% 
+  mutate(mod1_arblos_coef = map(.x = mod1_arblos, .f = tidy)) %>% 
+  mutate(mod1_arblos_sum = map(.x = mod1_arblos, .f = glance))
 ```
 
 arblos_by_knr skal nå se ut slik:
@@ -337,9 +343,9 @@ head(kom_str)
 
 Bruk så unnest() til å pakke ut mod1_arblos_coef og mod1_arblos_coef (husk at de to må stå i en c() og ha anførselstegn). Plukk ut variablene knr, knavn, term, estimate, std.error, p.value...9, adj.r.squared og legg resultatet i mod_arbl_re.
 
-```{r, echo=FALSE}
+```{r}
 #modell arbeidsløse resultat
-#mod_arbl_re <- 
+mod_arbl_re <- 
 ```
 
 Du skal da ha noe som ser slik ut:
