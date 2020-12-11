@@ -96,12 +96,18 @@ names(bef)
 Legg befolkningsdata varaiablene bef_K, bef_M, bef_KM til wf. Husk at de må aggregeres for hele landet (group_by() og så summarise() før de «joines»). Bruk tilslutt mutate() make_date() for å lage en ny variabel år som er en date, dvs aar + month=1L + day=1L.
 
 ```{r}
- wf <- bef %>%
+ wf_hjelp <- bef %>%
   group_by(aar) %>%
   summarise(bef_K = sum(bef_K),
             bef_M = sum(bef_M),
-            bef_KM = sum(bef_KM)) %>%
+            bef_KM = sum(bef_KM))
+wf <- left_join(wf, wf_hjelp) 
+
+wf <- wf %>%
+  select(aar, bef_K, bef_M, bef_KM, wf_K, wf_M, wf_KM) %>% 
   mutate(år = make_date(aar, month = 1L, day = 1L))
+
+rm(wf_hjelp)
 ```
 
 Da skal du få
