@@ -83,10 +83,9 @@ Summer de ulike årskategoriene for de to kjønnene og menn+kvinner for å finne
 ```{r}
 bef <- bef %>%
   mutate(
-    bef_K = ,
-    bef_M = ,
-    bef_KM = 
-  )
+    bef_K = bef_K_0_14 + bef_K_15_29 + bef_K_30_74 + bef_K_75_105,
+    bef_M = bef_M_0_14 + bef_M_15_29 + bef_M_30_74 + bef_M_75_105,
+    bef_KM = bef_K + bef_M)
 ```
 
 ```{r}
@@ -96,8 +95,13 @@ names(bef)
 
 Legg befolkningsdata varaiablene bef_K, bef_M, bef_KM til wf. Husk at de må aggregeres for hele landet (group_by() og så summarise() før de «joines»). Bruk tilslutt mutate() make_date() for å lage en ny variabel år som er en date, dvs aar + month=1L + day=1L.
 
-```{r, echo=FALSE}
-# wf <- bef %>%
+```{r}
+ wf <- bef %>%
+  group_by(aar) %>%
+  summarise(bef_K = sum(bef_K),
+            bef_M = sum(bef_M),
+            bef_KM = sum(bef_KM)) %>%
+  mutate(år = make_date(aar, month = 1L, day = 1L))
 ```
 
 Da skal du få

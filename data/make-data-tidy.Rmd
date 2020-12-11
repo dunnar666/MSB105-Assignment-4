@@ -357,7 +357,7 @@ bef9914MK <- bef9914MK %>%
   group_by(knr, knavn, aar, ald_int) %>% 
   summarise(bef_K = sum(bef_K), 
             bef_M = sum(bef_M),
-            bef_MK = sum(bef_K + bef_M))
+            bef_MK = bef_K + bef_M)
 ```
 
 ```{r}
