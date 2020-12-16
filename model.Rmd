@@ -1,8 +1,10 @@
 ---
 title: "Assignment 4"
 output:
-  pdf_document: default
+  html_document:
+    df_print: paged
   html_notebook: default
+  pdf_document: default
 ---
 
 ```{r setup}
@@ -275,7 +277,7 @@ wf_r %>%
   ggtitle("Arbeidsstyrkens andel av befolkningen for menn per region.")
 ```
 
-Forlar kort den generelle utviklingen i arbeidsstyrken. Hva er det som «redder oss»?
+Forklar kort den generelle utviklingen i arbeidsstyrken. Hva er det som «redder oss»?
 
 *Over tid ser vi at menn generelt har har hatt en synkende trend (sett bort fra vestlandet som har hatt en økende trend). På den andre siden har kvinner hatt en generelt økende trend. Og samlet sett ser man vekts over tid, men samtdig en liten nedgang de siste årene*
 
