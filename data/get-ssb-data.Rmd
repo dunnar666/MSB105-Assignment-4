@@ -8,14 +8,14 @@ output:
 ```{r setup}
 library(PxWebApiData)
 library(tidyverse)
-knitr::opts_chunk$set(eval = TRUE)
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
 ## Assignment 4; ssb data
 
 ### Data hentet
 
-Data sist hentet 30. november 2020. Dette dokumentet skal bare kjøres hvis nye data må hentes inn. `eval = FALSE` over i setup chunk må endres til `eval = TRUE`, så må setup chunk-en kjøres før en til slutt velger  `Restart R and run all chunks` fra `Run` menyen.
+Data sist hentet 10. desember 2020. Dette dokumentet skal bare kjøres hvis nye data må hentes inn. `eval = FALSE` over i setup chunk må endres til `eval = TRUE`, så må setup chunk-en kjøres før en til slutt velger  `Restart R and run all chunks` fra `Run` menyen.
 
 ### Vektoren med de 418 kommunene vi vil bruke
 
