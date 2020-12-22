@@ -96,6 +96,25 @@ Slik skal de 10 første navnene nå se ut:
 
 ```{r}
 head(unique(arblos_aldersgrp$knavn), n = 10)
+u_knavn <- unique(arblos_aldersgrp$knavn)
+head(u_knavn[str_detect(u_knavn, "\\(")], n = 10)
+```
+Som en ser over ender en opp med mange navn som ikke er fikset. Løsning: Istedenfor å ta spesialtilfeller spesifiserer vi et generelt mønster vha. en «regular expression».
+
+Starter med 1 eller flere «white space»: `\\s+`
+så kommer én parentes-start: `\\s+\\({1}`
+så kommer tall eller bindestrek `\\s+\\({1}[-\\d]+`
+helt opp til én parentes-slutt: `\\s+\\({1}[-\\d]+\\)`
+
+```{r}
+arblos_aldersgrp$knavn <- str_remove(
+  string = arblos_aldersgrp$knavn,
+  pattern = '\\s+\\({1}[-\\d]+\\)'
+  )
+# Nå er alle vekk, beholder (fylke) siden dette skiller
+# der vi har to kommuner med samme navn
+u_knavn <- unique(arblos_aldersgrp$knavn)
+head(u_knavn[str_detect(u_knavn, "\\(")], n = 10)
 ```
 
 ### Pivot for å gjøre tidy
@@ -142,15 +161,21 @@ Hva som må fikses i`df_arbl_p_kjonn`:
 
 ```{r}
 # Fjern (-2019) etc
+# df_arbl_p_kjonn$knavn <- str_remove(
+#   string = df_arbl_p_kjonn$knavn, 
+#   pattern = fixed(" (-2019)"))
+# df_arbl_p_kjonn$knavn <- str_remove(
+#   string = df_arbl_p_kjonn$knavn, 
+#   pattern = fixed(" (1992-2019)"))
+# df_arbl_p_kjonn$knavn <- str_remove(
+#   string = df_arbl_p_kjonn$knavn, 
+#   pattern = fixed(" (1994-2019)"))
 df_arbl_p_kjonn$knavn <- str_remove(
-  string = df_arbl_p_kjonn$knavn, 
-  pattern = fixed(" (-2019)"))
-df_arbl_p_kjonn$knavn <- str_remove(
-  string = df_arbl_p_kjonn$knavn, 
-  pattern = fixed(" (1992-2019)"))
-df_arbl_p_kjonn$knavn <- str_remove(
-  string = df_arbl_p_kjonn$knavn, 
-  pattern = fixed(" (1994-2019)"))
+  string = df_arbl_p_kjonn$knavn,
+  pattern = '\\s+\\({1}[-\\d]+\\)'
+  )
+u_knavn <- unique(df_arbl_p_kjonn$knavn )
+head(u_knavn[str_detect(u_knavn, "\\(")], n = 10)
 ```
 
 ```{r}
@@ -203,22 +228,32 @@ Gjør som ovenfor.
 
 ```{r}
 # Fikse navn
+# df_arbl$knavn <- str_remove(
+#   string = df_arbl$knavn, 
+#   pattern = fixed(" (-2019)"))
+# df_arbl$knavn <- str_remove(
+#   string = df_arbl$knavn, 
+#   pattern = fixed(" (1992-2019)"))
+# df_arbl$knavn <- str_remove(
+#   string = df_arbl$knavn, 
+#   pattern = fixed(" (1994-2019)"))
 df_arbl$knavn <- str_remove(
-  string = df_arbl$knavn, 
-  pattern = fixed(" (-2019)"))
-df_arbl$knavn <- str_remove(
-  string = df_arbl$knavn, 
-  pattern = fixed(" (1992-2019)"))
-df_arbl$knavn <- str_remove(
-  string = df_arbl$knavn, 
-  pattern = fixed(" (1994-2019)"))
+  string = df_arbl$knavn,
+  pattern = '\\s+\\({1}[-\\d]+\\)'
+  )
+u_knavn <- unique(df_arbl$knavn)
+head(u_knavn[str_detect(u_knavn, "\\(")], n = 10)
+```
 
+```{r}
 df_arbl <- separate(
   data = df_arbl, 
   c('aar', 'mnd'), 
   col = "tid", 
   sep = "M")
+```
 
+```{r}
 df_arbl <- df_arbl %>%
     pivot_wider(
     names_from = kjonn,
@@ -313,15 +348,21 @@ names(bef9914MK)
 Fiks kommunenavnene.
 
 ```{r}
+# bef9914MK$knavn <- str_remove(
+#   string = bef9914MK$knavn,
+#   pattern = fixed(" (-2019)"))
+# bef9914MK$knavn <- str_remove(
+#   string = bef9914MK$knavn,
+#   pattern = fixed(" (1992-2019)"))
+# bef9914MK$knavn <- str_remove(
+#   string = bef9914MK$knavn,
+#   pattern = fixed(" (1994-2019)"))
 bef9914MK$knavn <- str_remove(
   string = bef9914MK$knavn,
-  pattern = fixed(" (-2019)"))
-bef9914MK$knavn <- str_remove(
-  string = bef9914MK$knavn,
-  pattern = fixed(" (1992-2019)"))
-bef9914MK$knavn <- str_remove(
-  string = bef9914MK$knavn,
-  pattern = fixed(" (1994-2019)"))
+  pattern = '\\s+\\({1}[-\\d]+\\)'
+  )
+u_knavn <- unique(bef9914MK$knavn)
+head(u_knavn[str_detect(u_knavn, "\\(")], n = 10)
 ```
 
 ### Skifte navn fra tid til aar

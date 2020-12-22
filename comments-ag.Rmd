@@ -1,0 +1,12 @@
+---
+title: "Comments from ag"
+output: html_notebook
+---
+
+1.  Så vidt jeg kan se er get-ssb-data.Rmd perfekt. Jeg har gjort noen små endringer (echo = TRUE) for å se koden bedre og også satt `knitr::opts_chunk$set(eval = TRUE)` midlertidig for å sjekke at koden kjører. Det gjorde den.
+
+2.  Se mine kommentarer rundt `str_remove()` i `make-tidy-data.Rmd` . «Regular expressions» er et veldig sterkt verktøy og kan være greit å ha kjennskap til. Her passer det godt for å få gjort akkurat det vi ønsker. Å liste alle tilfellene her vha. `fixed()` blir lett en «never ending story». Ellers ser `make-tidy-data.Rmd` ut til å være i skjønneste orden.
+
+3.   Husk i ggplot() at når vi setter `colour = kategori_variabel` (event. kontinuerlig variabel) inne i `aes()` funksjonen så overlater vi til ggplot() å sette farge etter kategori. Når vi gjør det *utenfor* `aes()` styrer vi selv fargen, f.eks. `ggplot(mapping = aes(x = x, y = y), colour = "red")` og så `geom_point()` vil gi os røde punkter.
+
+4.  Fin besvarelse. God Jul!
