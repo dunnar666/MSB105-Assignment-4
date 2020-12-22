@@ -122,11 +122,17 @@ Vi vil nå se på arbeidsstyrke relativt til befolkning på landsbasis, dvs. wf_
 Plot dataen vha. geom_line() for de tre kategoriene. Bruk år som x-variabel.
 
 ```{r}
+# Setter farge utenfor aes(). Setter vi den inne i aes()
+# vil vi bruke farge til automatisk å skille ulike kategorier. 
+# Da måtte vi hatt en kategorivariabel (cat_wf) som spesifiserte om 
+# det var snakk om relativ wf for hhv. kvinner, menn eller k+m
+# Da ville vi brukt aes(x = år, y = wf_K/bef_K, colour = cat_wf)
+# ggplot ville da automagisk ha satt fargene for oss.
 wf %>% 
     ggplot(wf, mapping = aes(x = år)) +
-  geom_line(mapping = aes(y = wf_K/bef_K, color = "...")) +
-  geom_line(mapping = aes(y = wf_M/bef_M, color = "darkblue")) +
-  geom_line(mapping = aes(y = wf_KM/bef_KM)) +
+  geom_line(mapping = aes(y = wf_K/bef_K), color = "red") +
+  geom_line(mapping = aes(y = wf_M/bef_M), color = "darkblue") +
+  geom_line(mapping = aes(y = wf_KM/bef_KM), color = "black" ) +
   ggtitle("Arbeidsstyrke relativt til befolkning. Menn blå, kvinner rød og totalt svart.") +
   theme(legend.position = "none")
 ```
